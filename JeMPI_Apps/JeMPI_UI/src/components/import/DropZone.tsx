@@ -21,7 +21,6 @@ const DropZone: FC = () => {
   ): void => {
     validate(acceptedFiles, fileRejections)
     setFilesObj([
-      ...fileObjs,
       { file: acceptedFiles[0], progress: 0, status: UploadStatus.Pending }
     ])
   }
@@ -173,27 +172,29 @@ const DropZone: FC = () => {
 
   return (
     <Container>
-      <Box
-        className="dropzone"
-        {...getRootProps({
-          isFocused,
-          isDragAccept,
-          isDragReject
-        })}
-      >
-        <div className="dropzone-inner">
-          <input {...getInputProps()} />
-          <Box className="import__upload-icon">
-            <UploadFileIcon />
-          </Box>
-          <Typography fontSize="16px">
-            <a>Click to upload</a> or drag and drop
-          </Typography>
-          <Typography color="#00000099" fontSize="14px">
-            CSV (max. 128MB)
-          </Typography>
-        </div>
-      </Box>
+      {!fileObjs.length && (
+        <Box
+          className="dropzone"
+          {...getRootProps({
+            isFocused,
+            isDragAccept,
+            isDragReject
+          })}
+        >
+          <div className="dropzone-inner">
+            <input {...getInputProps()} />
+            <Box className="import__upload-icon">
+              <UploadFileIcon />
+            </Box>
+            <Typography fontSize="16px">
+              <a>Click to upload</a> or drag and drop
+            </Typography>
+            <Typography color="#00000099" fontSize="14px">
+              CSV (max. 128MB)
+            </Typography>
+          </div>
+        </Box>
+      )}
       {uploadList}
       <CardActions
         sx={{ display: 'block', textAlign: 'center', marginTop: '5%' }}
