@@ -4,11 +4,8 @@
   margin: auto;
   border: 1px dashed rgba(0, 0, 0, 0.12);
   border-radius: 4px;
-  max-width: 600px;
   max-height: 152px;
   text-align: center;
-  margin-top: 5%;
-  margin-bottom: 5%;
 }
 
 .dropzone-inner {

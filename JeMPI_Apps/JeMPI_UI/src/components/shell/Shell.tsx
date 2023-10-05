@@ -19,9 +19,9 @@ const Shell = () => {
       <Box
         component="main"
         sx={{
-          p: 6,
           width: '100%'
         }}
+        className="pt-6 md:p-6"
       >
         <Toolbar />
         <ErrorBoundary>

@@ -1,5 +1,17 @@
 import { UploadFile as UploadFileIcon } from '@mui/icons-material'
-import { Box, CardActions, Container, Typography } from '@mui/material'
+import {
+  Box,
+  CardActions,
+  Checkbox,
+  Container,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+  Typography
+} from '@mui/material'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError, AxiosProgressEvent, AxiosRequestConfig } from 'axios'
 import { useSnackbar } from 'notistack'
@@ -121,6 +133,7 @@ const DropZone: FC = () => {
       enqueueSnackbar(`${fileObj.file.name} file imported`, {
         variant: 'success'
       })
+      setFilesObj([])
     },
     onError: (error: AxiosError, data) => {
       enqueueSnackbar(
@@ -166,29 +179,79 @@ const DropZone: FC = () => {
   return (
     <Container>
       {!fileObjs.length && (
-        <Box
-          className="dropzone"
-          {...getRootProps({
-            isFocused,
-            isDragAccept,
-            isDragReject
-          })}
-        >
-          <div className="dropzone-inner">
-            <input {...getInputProps()} />
-            <Box className="import__upload-icon">
-              <UploadFileIcon />
-            </Box>
-            <Typography fontSize="16px">
-              <a>Click to upload</a> or drag and drop
-            </Typography>
-            <Typography color="#00000099" fontSize="14px">
-              CSV (max. 128MB)
-            </Typography>
+        <div className="w-full grid grid-cols-1 justify-items-center gap-8">
+          <Box
+            className="dropzone w-1/2"
+            {...getRootProps({
+              isFocused,
+              isDragAccept,
+              isDragReject
+            })}
+          >
+            <div className="dropzone-inner">
+              <input {...getInputProps()} />
+              <Box className="import__upload-icon">
+                <UploadFileIcon />
+              </Box>
+              <Typography fontSize="16px">
+                <a>Click to upload</a> or drag and drop
+              </Typography>
+              <Typography color="#00000099" fontSize="14px">
+                CSV (max. 128MB)
+              </Typography>
+            </div>
+          </Box>
+          <div className="flex flex-col gap-6 w-3/5">
+            <div className="flex gap-8 justify-start items-center">
+              <Typography className="font-bold text-xl">TB 1</Typography>
+              <TextField placeholder="TB 1" size="small" />
+            </div>
+            <div className="flex gap-8  items-center">
+              <Typography className="font-bold text-xl">CB</Typography>
+              <FormControlLabel
+                value="start"
+                control={<Checkbox />}
+                label="CB1"
+                labelPlacement="start"
+              />
+              <FormControlLabel
+                value="start"
+                control={<Checkbox />}
+                label="CB2"
+                labelPlacement="start"
+              />
+            </div>
+            <div className="flex gap-8  items-center">
+              <Typography className="font-bold text-xl">CB</Typography>
+              <FormControl>
+                <RadioGroup
+                  aria-labelledby="demo-radio-buttons-group-label"
+                  defaultValue="female"
+                  name="radio-buttons-group"
+                >
+                  <FormControlLabel
+                    value="female"
+                    control={<Radio />}
+                    label="Opt1"
+                  />
+                  <FormControlLabel
+                    value="male"
+                    control={<Radio />}
+                    label="Opt2"
+                  />
+                  <FormControlLabel
+                    value="other"
+                    control={<Radio />}
+                    label="Opt3"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </div>
           </div>
-        </Box>
+        </div>
       )}
       {uploadList}
+
       <CardActions
         sx={{ display: 'block', textAlign: 'center', marginTop: '5%' }}
       >
