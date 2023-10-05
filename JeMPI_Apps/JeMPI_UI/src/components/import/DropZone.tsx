@@ -30,14 +30,7 @@ const DropZone: FC = () => {
     fileRejections: FileRejection[]
   ): void => {
     if (fileRejections.length > 0) {
-      enqueueSnackbar('File type not supported', {
-        variant: 'error'
-      })
-      return
-    }
-
-    if (fileObjs.some(x => x.file.name === acceptedFiles[0].name)) {
-      enqueueSnackbar('File already queued', {
+      enqueueSnackbar(fileRejections[0].errors[0].message, {
         variant: 'error'
       })
       return
@@ -55,8 +48,8 @@ const DropZone: FC = () => {
     useDropzone({
       accept: { 'text/csv': ['.csv'] },
       onDrop,
-      maxFiles: 1,
-      multiple: true
+      multiple: false,
+      maxSize: 128 * 1024 * 1024
     })
 
   const uploadFile = async (fileObj: FileObj) => {
