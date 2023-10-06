@@ -690,25 +690,27 @@ public final class Routes {
             path(GlobalConstants.SEGMENT_POST_UPLOAD_CSV_FILE,
                   () -> Routes.postUploadCsvFile(actorSystem, backEnd)),
             path(GlobalConstants.SEGMENT_PROXY_POST_CALCULATE_SCORES,
-                  () -> Routes.proxyPostCalculateScores(http)),
+                  () -> Routes.proxyPostCalculateScores(AppConfig.LINKER_IP,
+                                                      AppConfig.LINKER_HTTP_PORT,
+                                                      http)),
             path(GlobalConstants.SEGMENT_POST_FILTER_GIDS,
                   () -> Routes.postFilterGids(actorSystem, backEnd)),
             path(GlobalConstants.SEGMENT_PROXY_CR_REGISTER,
-                  () -> Routes.postCrRegister(http)),
+                  () -> Routes.postCrRegister(AppConfig.LINKER_IP, AppConfig.LINKER_HTTP_PORT, http)),
             path(GlobalConstants.SEGMENT_PROXY_CR_FIND,
-                  () -> Routes.postCrFind(http)),
+                  () -> Routes.postCrFind(AppConfig.LINKER_IP, AppConfig.LINKER_HTTP_PORT, http)),
             path(GlobalConstants.SEGMENT_PROXY_CR_CANDIDATES,
-                  () -> Routes.postCrCandidates(http)),
+                  () -> Routes.postCrCandidates(AppConfig.LINKER_IP, AppConfig.LINKER_HTTP_PORT, http)),
             path(GlobalConstants.SEGMENT_POST_FILTER_GIDS_WITH_INTERACTION_COUNT,
                   () -> Routes.postFilterGidsWithInteractionCount(actorSystem, backEnd)))),
             patch(() -> concat(path(segment(GlobalConstants.SEGMENT_PATCH_GOLDEN_RECORD).slash(segment(Pattern.compile(
-                  "^[A-z0-9]+$"))), gid -> Routes.patchGoldenRecord(actorSystem, backEnd, gid)),
+                        "^[A-z0-9]+$"))), gid -> Routes.patchGoldenRecord(actorSystem, backEnd, gid)),
                   path(GlobalConstants.SEGMENT_PATCH_IID_NEW_GID_LINK,
                         () -> Routes.patchIidNewGidLink(actorSystem, backEnd)),
                   path(GlobalConstants.SEGMENT_PATCH_IID_GID_LINK,
                         () -> Routes.patchIidGidLink(actorSystem, backEnd)),
                   path(GlobalConstants.SEGMENT_PROXY_CR_UPDATE_FIELDS,
-                        () -> Routes.patchCrUpdateFields(http)))),
+                        () -> Routes.patchCrUpdateFields(AppConfig.LINKER_IP, AppConfig.LINKER_HTTP_PORT, http)))),
             get(() -> concat(path(GlobalConstants.SEGMENT_COUNT_GOLDEN_RECORDS,
                   () -> Routes.countGoldenRecords(actorSystem, backEnd)),
                   path(GlobalConstants.SEGMENT_COUNT_INTERACTIONS,
@@ -739,8 +741,11 @@ public final class Routes {
                         "^[A-z0-9]+$"))), iid -> Routes.getInteraction(actorSystem, backEnd, iid)),
                   path(segment(GlobalConstants.SEGMENT_GET_EXPANDED_GOLDEN_RECORD).slash(segment(Pattern.compile(
                         "^[A-z0-9]+$"))), gid -> Routes.getExpandedGoldenRecord(actorSystem, backEnd, gid)),
+                  path(GlobalConstants.SEGMENT_GET_FIELDS_CONFIG, () -> complete(StatusCodes.OK, jsonFields)),
                   path(GlobalConstants.SEGMENT_PROXY_GET_CANDIDATES_WITH_SCORES,
-                        () -> Routes.proxyGetCandidatesWithScore(http)))));
+                        () -> Routes.proxyGetCandidatesWithScore(AppConfig.LINKER_IP,
+                                                                  AppConfig.LINKER_HTTP_PORT,
+                                                                  http)))));
    }
 
 }
