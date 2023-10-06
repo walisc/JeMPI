@@ -6,9 +6,18 @@ set -u
 export USE_LOCAL_REGISTRY=false
 
 # Creating conf.env file
-pushd ./docker/conf/env || exit
-    source ./create-env-linux-1.sh
-popd || exit
+while true; do
+    read -p "Do you want to (re)create the environment? " yn
+    case $yn in
+        [Yy]* )
+          pushd ./docker/conf/env || exit
+              source ./create-env-linux-low-1.sh
+          popd || exit
+          break;;
+        [Nn]* ) break;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
 
 while true; do
     read -p "Do you want to reset docker swarm? " yn
@@ -35,7 +44,8 @@ while true; do
 done
 
 # Copy Config for API
-cp -f ./JeMPI_Apps/JeMPI_Configuration/config-reference.json ./JeMPI_Apps/JeMPI_API/src/main/resources/config-reference.json
+cp -L -f ./JeMPI_Apps/JeMPI_Configuration/config-api.json ./JeMPI_Apps/JeMPI_API/src/main/resources/config-api.json
+cp -L -f ./JeMPI_Apps/JeMPI_Configuration/config-api.json ./JeMPI_Apps/JeMPI_API_KC/src/main/resources/config-api.json
 
 # Maven package
 pushd ./JeMPI_Apps || exit
@@ -44,7 +54,7 @@ popd || exit
 
 # Run bash scripts
 while true; do
-    read -p "Do you want to get the latest docker images? " yn
+    read -p "Do you want to pull the latest images from docker hub? " yn
     case $yn in
         [Yy]* )
           pushd ./docker/ || exit
@@ -77,6 +87,17 @@ popd
 pushd ./JeMPI_Apps/JeMPI_API
   source ./build.sh || exit 1
 popd
+pushd ./JeMPI_Apps/JeMPI_API_KC
+  source ./build.sh || exit 1
+popd
 pushd ./docker/ || exit
   source ./z-stack-2-reboot.sh
 popd || exit
+
+# Configure keycloak
+echo "Waiting to configure keycloak..."
+sleep 30
+pushd docker/conf/keycloak/ || exit
+  ./1-import.sh || exit 1
+popd || exit
+echo "Done configuring keycloak"
