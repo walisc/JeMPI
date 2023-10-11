@@ -9,6 +9,9 @@ import akka.http.javadsl.model.*;
 import akka.http.javadsl.server.Route;
 import akka.japi.Pair;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.Config;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jembi.jempi.libmpi.MpiGeneralError;
@@ -35,6 +38,42 @@ public final class Routes {
 
    private static final Function<Map.Entry<String, String>, String> PARAM_STRING = Map.Entry::getValue;
 
+   private static final Config SYSTEM_PROPERTIES = ConfigFactory.systemProperties();
+   private static final Config SYSTEM_ENVIRONMENT = ConfigFactory.systemEnvironment();
+   
+   private static final Config CONFIG = new Builder().withSystemProperties().withSystemEnvironment().build();
+
+   // TODO: This might be different in API. use this instead
+   public static final String LINKER_IP = CONFIG.getString("LINKER_IP");
+   public static final Integer LINKER_HTTP_PORT = CONFIG.getInt("LINKER_HTTP_PORT");
+
+   static class Builder {
+      private Config conf = ConfigFactory.empty();
+
+      Builder withSystemProperties() {
+         conf = conf.withFallback(SYSTEM_PROPERTIES);
+         LOGGER.info("Loaded system properties into config");
+         return this;
+      }
+
+      Builder withSystemEnvironment() {
+         conf = conf.withFallback(SYSTEM_ENVIRONMENT);
+         LOGGER.info("Loaded system environment into config");
+         return this;
+      }
+
+      Config build() {
+            // Resolve substitutions.
+            conf = conf.resolve();
+            if (LOGGER.isDebugEnabled()) {
+               LOGGER.debug("Logging properties. Make sure sensitive data such as passwords or secrets are not logged!");
+               LOGGER.debug(conf.root().render());
+            }
+            return conf;
+         }
+   
+   }
+   
    private Routes() {
    }
 
@@ -690,17 +729,17 @@ public final class Routes {
             path(GlobalConstants.SEGMENT_POST_UPLOAD_CSV_FILE,
                   () -> Routes.postUploadCsvFile(actorSystem, backEnd)),
             path(GlobalConstants.SEGMENT_PROXY_POST_CALCULATE_SCORES,
-                  () -> Routes.proxyPostCalculateScores(AppConfig.LINKER_IP,
-                                                      AppConfig.LINKER_HTTP_PORT,
+                  () -> Routes.proxyPostCalculateScores(LINKER_IP,
+                                                      LINKER_HTTP_PORT,
                                                       http)),
             path(GlobalConstants.SEGMENT_POST_FILTER_GIDS,
                   () -> Routes.postFilterGids(actorSystem, backEnd)),
             path(GlobalConstants.SEGMENT_PROXY_CR_REGISTER,
-                  () -> Routes.postCrRegister(AppConfig.LINKER_IP, AppConfig.LINKER_HTTP_PORT, http)),
+                  () -> Routes.postCrRegister(LINKER_IP, LINKER_HTTP_PORT, http)),
             path(GlobalConstants.SEGMENT_PROXY_CR_FIND,
-                  () -> Routes.postCrFind(AppConfig.LINKER_IP, AppConfig.LINKER_HTTP_PORT, http)),
+                  () -> Routes.postCrFind(LINKER_IP, LINKER_HTTP_PORT, http)),
             path(GlobalConstants.SEGMENT_PROXY_CR_CANDIDATES,
-                  () -> Routes.postCrCandidates(AppConfig.LINKER_IP, AppConfig.LINKER_HTTP_PORT, http)),
+                  () -> Routes.postCrCandidates(LINKER_IP, LINKER_HTTP_PORT, http)),
             path(GlobalConstants.SEGMENT_POST_FILTER_GIDS_WITH_INTERACTION_COUNT,
                   () -> Routes.postFilterGidsWithInteractionCount(actorSystem, backEnd)))),
             patch(() -> concat(path(segment(GlobalConstants.SEGMENT_PATCH_GOLDEN_RECORD).slash(segment(Pattern.compile(
@@ -710,7 +749,7 @@ public final class Routes {
                   path(GlobalConstants.SEGMENT_PATCH_IID_GID_LINK,
                         () -> Routes.patchIidGidLink(actorSystem, backEnd)),
                   path(GlobalConstants.SEGMENT_PROXY_CR_UPDATE_FIELDS,
-                        () -> Routes.patchCrUpdateFields(AppConfig.LINKER_IP, AppConfig.LINKER_HTTP_PORT, http)))),
+                        () -> Routes.patchCrUpdateFields(LINKER_IP, LINKER_HTTP_PORT, http)))),
             get(() -> concat(path(GlobalConstants.SEGMENT_COUNT_GOLDEN_RECORDS,
                   () -> Routes.countGoldenRecords(actorSystem, backEnd)),
                   path(GlobalConstants.SEGMENT_COUNT_INTERACTIONS,
@@ -743,8 +782,8 @@ public final class Routes {
                         "^[A-z0-9]+$"))), gid -> Routes.getExpandedGoldenRecord(actorSystem, backEnd, gid)),
                   path(GlobalConstants.SEGMENT_GET_FIELDS_CONFIG, () -> complete(StatusCodes.OK, jsonFields)),
                   path(GlobalConstants.SEGMENT_PROXY_GET_CANDIDATES_WITH_SCORES,
-                        () -> Routes.proxyGetCandidatesWithScore(AppConfig.LINKER_IP,
-                                                                  AppConfig.LINKER_HTTP_PORT,
+                        () -> Routes.proxyGetCandidatesWithScore(LINKER_IP,
+                                                                  LINKER_HTTP_PORT,
                                                                   http)))));
    }
 
