@@ -19,8 +19,12 @@ jobs:
         run: |
          source "$HOME/.sdkman/bin/sdkman-init.sh"
          sdk install java 21.0.1-tem
-      - name: Set up SBT 1.9
+      - name: Set up SBT 1.9.8
         run: |
          source "$HOME/.sdkman/bin/sdkman-init.sh"
-         sdk install sbt 1.9
+         sdk install sbt 1.9.8
+      - name: Cache SDKMan
+        uses: actions/cache@v3
+        with:
+          path: $HOME/.sdkman
 
