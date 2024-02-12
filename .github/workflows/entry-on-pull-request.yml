@@ -13,7 +13,7 @@ defaults:
     shell: bash
 
 env:
-  GITHUB_WORKFLOW_FOLDER: ./.github/workflows
+  GITHUB_WORKFLOW_FOLDER: $HOME/.github/workflows
   JEMPI_APP_PATH: $HOME/JeMPI_Apps
 
 jobs:
@@ -21,31 +21,31 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
-    - uses: '$GITHUB_WORKFLOW_FOLDER/actions/prepare'
+    - uses: ./.github/workflows/actions/prepare
   lint:
     needs: [prepare]
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
-    - uses: $GITHUB_WORKFLOW_FOLDER/actions/lint
+    - uses: ./.github/workflows/actions/lint
   build-check:
     needs: [lint]
     runs-on: ubuntu-22.04
     continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
     steps:
     - uses: actions/checkout@v4
-    - uses: $GITHUB_WORKFLOW_FOLDER/actions/build-check
+    - uses: ./.github/workflows/actions/build-check
   test:
     needs: [build-check]
     runs-on: ubuntu-22.04
     continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
     steps:
     - uses: actions/checkout@v4
-    - uses: $GITHUB_WORKFLOW_FOLDER/actions/test
+    - uses: ./.github/workflows/actions/test
   smoke-test:
     needs: [test]
     runs-on: ubuntu-22.04
     continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
     steps:
     - uses: actions/checkout@v4
-    - uses: $GITHUB_WORKFLOW_FOLDER/actions/smoke-test
+    - uses: ./.github/workflows/actions/smoke-test
