@@ -9,12 +9,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+      - name: Set up SDKMan
+        uses: ./.github/workflows/actions/install-sdkman
       - name: Set up JDK 21.0.1-tem
-        uses: ./.github/workflows/actions/install-java
-        with:
-          java-version: '21.0.1-tem'
+        run: sdk install java 21.0.1-tem
       - name: Set up SBT 1.9
-        uses: ./.github/workflows/actions/install-sbt
-        with:
-          sbt-version: '1.9.0'
+        run: sdk install sbt 1.9
 
