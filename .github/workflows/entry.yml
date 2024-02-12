@@ -11,8 +11,6 @@ defaults:
 
 jobs:
   prepare:
-    environment:
-      name: approvers
     uses: ./.github/workflows/prepare.yml
   lint:
     needs: [prepare]
