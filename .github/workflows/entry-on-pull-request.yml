@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
-    - uses: $GITHUB_WORKFLOW_FOLDER/actions/prepare
+    - uses: '$GITHUB_WORKFLOW_FOLDER/actions/prepare'
   lint:
     needs: [prepare]
     runs-on: ubuntu-22.04
