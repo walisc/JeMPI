@@ -5,9 +5,9 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - name: Install SBT
+  - name: Install Java
     uses: sdkman/sdkman-action@v1-preview-2
     id: sdkman
     with:
-      candidate: sbt
+      candidate: java
       version: ${{ inputs.java-version }}
