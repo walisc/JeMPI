@@ -9,8 +9,10 @@ runs:
         path: $HOME/.sdkman
         key: sdkman-home
     - name: Running java linter
-      run: './mvn_linter.sh $HOME/JeMPI_Apps'
+      run: |
+        source "$HOME/.sdkman/bin/sdkman-init.sh"
+        '$GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $HOME/JeMPI_Apps'
       shell: bash
-    - name: Running javascript linter
-      run: './mvn_linter.sh $HOME/JeMPI_Apps'
-      shell: bash
+    # - name: Running javascript linter
+    #   run: './mvn_linter.sh $HOME/JeMPI_Apps'
+    #   shell: bash

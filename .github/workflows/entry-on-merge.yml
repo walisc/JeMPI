@@ -5,13 +5,17 @@ on:
     branches:
       - '*'
 
+env:
+  GITHUB_WORKFLOW_FOLDER: $HOME/.github/workflows
+  JEMPI_APP_PATH: $HOME/JeMPI_Apps
+
 defaults:
   run:
     shell: bash
 
 jobs:
   build-images:
-    uses: ./.github/workflows/build-images.yml
+    uses: $GITHUB_WORKFLOW_FOLDER/build-images.yml
   deploy-images-to-local-repo:
     needs: [build-images]
-    uses: ./.github/workflows/deploy-images-to-local-repo.yml
+    uses: $GITHUB_WORKFLOW_FOLDER/deploy-images-to-local-repo.yml
