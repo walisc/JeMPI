@@ -1,0 +1,16 @@
+name: Deploy Images to Docker Hub
+
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Which tag do you want to use'
+        required: true
+        type: string
+
+jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2

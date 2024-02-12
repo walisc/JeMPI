@@ -1,0 +1,45 @@
+on:
+  push:
+    branches:
+      - '*'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  prepare:
+    uses: ./.github/workflows/prepare.yml
+  lint:
+    needs: [prepare]
+    uses: ./.github/workflows/lint.yml
+  test:
+    needs: [lint]
+    uses: ./.github/workflows/test.yml
+  smoke-test:
+    needs: [test]
+    uses: ./.github/workflows/smoke-test.yml
+  # Manually run
+  # build-images:
+  #   needs: [prepare]
+  #   manually
+  #   uses: ./.github/workflows/build-images.yml
+  # deploy-images-localhub:
+  #   needs: [ build-images]
+  #   manually
+  #   uses: ./.github/workflows/build-images.yml
+  # deploy-to-dev-site:
+  #   needs: [ build-images, lint]
+  #   manually
+  #   uses: ./.github/workflows/build-images.yml
+  # deploy-images-dockerhub:
+  #   needs: [ build-images, lint, test, smoke-test]
+  #   manually
+  #   uses: ./.github/workflows/build-images.yml
+  #   requires: tak
+  # depluy-to-staging-site:
+  #   needs: [ build-images, lint, test, smoke-test]
+  #   manually
+  #   uses: ./.github/workflows/build-images.yml
+  #   requires: tak
+
