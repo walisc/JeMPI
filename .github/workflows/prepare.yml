@@ -7,7 +7,7 @@ jobs:
   prepare:
     runs-on: ubuntu-22.04
     environment:
-      name: approvers
+      name: a2
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
