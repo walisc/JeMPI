@@ -6,7 +6,7 @@ runs:
   using: 'composite'
   steps:
   - name: Install SBT
-    uses: sdkman/sdkman-action@v1
+    uses: sdkman/sdkman-action
     id: sdkman
     with:
       candidate: sbt
