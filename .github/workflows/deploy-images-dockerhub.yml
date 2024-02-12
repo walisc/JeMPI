@@ -1,7 +1,8 @@
-name: Child Workflow > Deploy Images to Docekr Hub
+name: Deploy Images to DockerHub
 
 on:
   workflow_call:
+  
 jobs:
   prepare:
     runs-on: ubuntu-22.04

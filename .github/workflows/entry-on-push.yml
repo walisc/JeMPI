@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '*'
+  workflow_call:
 
 defaults:
   run:
@@ -11,40 +12,11 @@ defaults:
 
 jobs:
   prepare:
-    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: ./.github/workflows/actions/prepare
-  # lint:
-  #   needs: [prepare]
-  #   steps:
-  #   - uses: ./.github/workflows/actions/lint
-  # test:
-  #   needs: [lint]
-  #   uses: ./.github/workflows/test.yml
-  # smoke-test:
-  #   needs: [test]
-  #   uses: ./.github/workflows/smoke-test.yml
-  # Manually run
-  # build-images:
-  #   needs: [prepare]
-  #   uses: ./.github/workflows/build-images.yml
-  # deploy-images-localhub:
-  #   needs: [ build-images]
-  #   manually
-  #   uses: ./.github/workflows/build-images.yml
-  # deploy-to-dev-site:
-  #   needs: [ build-images, lint]
-  #   manually
-  #   uses: ./.github/workflows/build-images.yml
-  # deploy-images-dockerhub:
-  #   needs: [ build-images, lint, test, smoke-test]
-  #   manually
-  #   uses: ./.github/workflows/build-images.yml
-  #   requires: tak
-  # depluy-to-staging-site:
-  #   needs: [ build-images, lint, test, smoke-test]
-  #   manually
-  #   uses: ./.github/workflows/build-images.yml
-  #   requires: tak
-
+    - uses: actions/checkout@v2
+    - uses: ./.github/workflows/actions/prepare
+  lint:
+    needs: [prepare]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/workflows/actions/lint

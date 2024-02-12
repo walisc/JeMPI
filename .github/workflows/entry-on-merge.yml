@@ -1,0 +1,17 @@
+name: OnMerge
+
+on:
+  merged:
+    branches:
+      - '*'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-images:
+    uses: ./.github/workflows/build-images.yml
+  deploy-images-to-local-repo:
+    needs: [build-images]
+    uses: ./.github/workflows/deploy-images-to-local-repo.yml

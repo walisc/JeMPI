@@ -10,37 +10,15 @@ defaults:
     shell: bash
 
 jobs:
-  prepare:
-    uses: ./.github/workflows/prepare.yml
-  lint:
-    needs: [prepare]
-    uses: ./.github/workflows/lint.yml
+  prepare_and_lint:
+    uses: ./.github/workflows/entry-on-push.yml
   test:
-    needs: [lint]
-    uses: ./.github/workflows/test.yml
+    needs: [prepare_and_lint]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/workflows/actions/test
   smoke-test:
     needs: [test]
-    uses: ./.github/workflows/smoke-test.yml
-  # Manually run
-  # build-images:
-  #   needs: [prepare]
-  #   uses: ./.github/workflows/build-images.yml
-  # deploy-images-localhub:
-  #   needs: [ build-images]
-  #   manually
-  #   uses: ./.github/workflows/build-images.yml
-  # deploy-to-dev-site:
-  #   needs: [ build-images, lint]
-  #   manually
-  #   uses: ./.github/workflows/build-images.yml
-  # deploy-images-dockerhub:
-  #   needs: [ build-images, lint, test, smoke-test]
-  #   manually
-  #   uses: ./.github/workflows/build-images.yml
-  #   requires: tak
-  # depluy-to-staging-site:
-  #   needs: [ build-images, lint, test, smoke-test]
-  #   manually
-  #   uses: ./.github/workflows/build-images.yml
-  #   requires: tak
-
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./.github/workflows/actions/smoke-test

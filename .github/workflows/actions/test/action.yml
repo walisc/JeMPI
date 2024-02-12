@@ -1,4 +1,4 @@
-name: Action > Install SDKMan
+name: Action > Test
 
 runs:
   using: 'composite'
