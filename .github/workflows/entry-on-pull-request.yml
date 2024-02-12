@@ -16,32 +16,32 @@ jobs:
   prepare:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/prepare
   lint:
     needs: [prepare]
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/lint
   build-check:
     needs: [lint]
     runs-on: ubuntu-22.04
     continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/build-check
   test:
     needs: [build-check]
     runs-on: ubuntu-22.04
     continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/test
   smoke-test:
     needs: [test]
     runs-on: ubuntu-22.04
     continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/smoke-test
