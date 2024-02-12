@@ -1,7 +1,7 @@
 name: OnPullRequest
 
 on:
-  pull:
+  pull_request:
     branches:
       - '*'
 
@@ -14,11 +14,13 @@ jobs:
     uses: ./.github/workflows/entry-on-push.yml
   test:
     needs: [prepare_and_lint]
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - uses: ./.github/workflows/actions/test
   smoke-test:
     needs: [test]
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - uses: ./.github/workflows/actions/smoke-test

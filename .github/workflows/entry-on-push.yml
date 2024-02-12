@@ -9,15 +9,16 @@ on:
 defaults:
   run:
     shell: bash
-    on: ubuntu-22.04
 
 jobs:
   prepare:
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - uses: ./.github/workflows/actions/prepare
   lint:
     needs: [prepare]
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
     - uses: ./.github/workflows/actions/lint
