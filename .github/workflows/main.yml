@@ -9,29 +9,5 @@ defaults:
 
 jobs:
   prepare:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Set up SDKMan
-        uses: ./.github/workflows/actions/install-sdkman
-      - name: Set up Java
-        uses: ./.github/workflows/actions/sdkman-installer
-        with:
-          candidate: java
-          version: '21.0.1-tem'
-      - name: Set up Maven
-        uses: ./.github/workflows/actions/sdkman-installer
-        with:
-          candidate: maven
-          version: '3.9.5'
-      - name: Set Scala Build Tools
-        uses: ./.github/workflows/actions/sdkman-installer
-        with:
-          candidate: sbt
-          version: '1.9.8'
-      - name: Cache SDKMan Install
-        uses: actions/cache@v3
-        with:
-          path: $HOME/.sdkman
+    uses: ./.github/workflows/jobs/prepare.yml
 
