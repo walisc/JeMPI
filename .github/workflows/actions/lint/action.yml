@@ -4,4 +4,13 @@ runs:
   using: 'composite'
   steps:
     - uses: actions/checkout@v4
-    - run: './mvn_linter.sh $HOME/JeMPI_Apps'
+    - uses: actions/cache/restore@v4
+      with:
+        path: $HOME/.sdkman
+        key: sdkman-home
+    - name: Running java linter
+      run: './mvn_linter.sh $HOME/JeMPI_Apps'
+      shell: bash
+    - name: Running javascript linter
+      run: './mvn_linter.sh $HOME/JeMPI_Apps'
+      shell: bash
