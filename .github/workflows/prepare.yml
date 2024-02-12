@@ -6,11 +6,11 @@ on:
 jobs:
   prepare:
     runs-on: ubuntu-22.04
+    environment:
+      name: approvers
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-        environment:
-          name: approvers
       - name: Set up SDKMan
         uses: ./.github/workflows/actions/install-sdkman
       - name: Set up Java
