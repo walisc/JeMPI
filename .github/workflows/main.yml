@@ -16,6 +16,7 @@ jobs:
       - name: Set up SDKMan
         uses: ./.github/workflows/actions/install-sdkman
       - name: Set up JDK 21.0.1-tem
+        shell: bash
         run: sdk install java 21.0.1-tem
       - name: Set up SBT 1.9
         run: sdk install sbt 1.9
