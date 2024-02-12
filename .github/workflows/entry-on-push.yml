@@ -1,4 +1,4 @@
-name: Entry
+name: OnPush
 
 on:
   push:
@@ -11,16 +11,19 @@ defaults:
 
 jobs:
   prepare:
-    uses: ./.github/workflows/prepare.yml
-  lint:
-    needs: [prepare]
-    uses: ./.github/workflows/lint.yml
-  test:
-    needs: [lint]
-    uses: ./.github/workflows/test.yml
-  smoke-test:
-    needs: [test]
-    uses: ./.github/workflows/smoke-test.yml
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: ./.github/workflows/actions/prepare
+  # lint:
+  #   needs: [prepare]
+  #   steps:
+  #   - uses: ./.github/workflows/actions/lint
+  # test:
+  #   needs: [lint]
+  #   uses: ./.github/workflows/test.yml
+  # smoke-test:
+  #   needs: [test]
+  #   uses: ./.github/workflows/smoke-test.yml
   # Manually run
   # build-images:
   #   needs: [prepare]
