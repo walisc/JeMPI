@@ -3,7 +3,7 @@ on:
     branches:
       - '*'
 
-puldefaults:
+defaults:
   run:
     shell: bash
 
