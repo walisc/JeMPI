@@ -20,9 +20,9 @@ jobs:
     needs: [test]
     uses: ./.github/workflows/smoke-test.yml
   # Manually run
-  build-images:
-    needs: [prepare]
-    uses: ./.github/workflows/build-images.yml
+  # build-images:
+  #   needs: [prepare]
+  #   uses: ./.github/workflows/build-images.yml
   # deploy-images-localhub:
   #   needs: [ build-images]
   #   manually
