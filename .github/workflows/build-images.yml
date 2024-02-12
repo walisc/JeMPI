@@ -3,6 +3,12 @@ on:
     branches:
       - '*'
   workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Which tag do you want to use'
+        required: true
+        type: string
+
 
 jobs:
   prepare:
