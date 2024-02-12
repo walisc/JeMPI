@@ -10,4 +10,4 @@ runs:
     id: sdkman
     with:
       candidate: sbt
-      version: ${{ input.java-version }}
+      version: ${{ inputs.java-version }}
