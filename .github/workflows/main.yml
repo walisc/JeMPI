@@ -9,5 +9,5 @@ defaults:
 
 jobs:
   prepare:
-    uses: ./.github/workflows/jobs/prepare.yml
+    uses: ./.github/workflows/prepare.yml
 

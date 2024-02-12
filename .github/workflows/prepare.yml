@@ -8,8 +8,6 @@ jobs:
   prepare:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
       - name: Set up SDKMan
         uses: ./.github/workflows/actions/install-sdkman
       - name: Set up Java
