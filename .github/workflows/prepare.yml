@@ -1,8 +1,7 @@
 name: Prepare
 
-defaults:
-  run:
-    shell: bash
+on:
+  workflow_call:
 
 jobs:
   prepare:
