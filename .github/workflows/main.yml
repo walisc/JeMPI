@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        
+      - name: Set up JDK 21.0.1-tem
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'tem'
+          java-version: '21.0.1'
+
+      - name: Set up SBT 1.9
+        uses: olafurpg/setup-sbt@v10
+        with:
+          sbt-version: 1.9
+
