@@ -1,6 +1,6 @@
-name: Install Scala Build Tools
+name: Install Java
 inputs:
-  sbt-version:
+  java-version:
     required: true
 runs:
   using: 'composite'
@@ -10,4 +10,4 @@ runs:
     id: sdkman
     with:
       candidate: sbt
-      version: ${{ input.sbt-version }}
+      version: ${{ input.java-version }}
