@@ -3,10 +3,9 @@ name: OnPullRequest
 on:
   pull_request: 
     branches:
-      - '*'
-  push:
-    branches:
-      - '*'
+      - 'dev'
+      - 'main'
+      - 'master'
 
 defaults:
   run:
