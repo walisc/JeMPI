@@ -11,8 +11,8 @@ runs:
     - name: Running java linter
       run: |
         source "$HOME/.sdkman/bin/sdkman-init.sh"
+        chmod +x $GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh
         set -eo pipefail
-        dfdfsfdsf = 78
         source $GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $JEMPI_APP_PATH
       shell: bash
     # - name: Running javascript linter
