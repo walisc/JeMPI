@@ -5,6 +5,11 @@ runs:
   steps:
     - name: Checkout Code
       uses: actions/checkout@v4
+    - name: Cache SDKMan Install
+      uses: actions/cache@v4
+      with:
+        path: ~/.sdkman
+        key: sdkman-home
     - name: Set up SDKMan
       uses: ./.github/workflows/actions/install-sdkman
     - name: Set up Java
@@ -22,8 +27,3 @@ runs:
       with:
         candidate: sbt
         version: '1.9.8'
-    - name: Cache SDKMan Install
-      uses: actions/cache@v4
-      with:
-        path: $HOME/.sdkman
-        key: sdkman-home
