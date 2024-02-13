@@ -11,6 +11,9 @@ runs:
         source "$HOME/.sdkman/bin/sdkman-init.sh"
         source $GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $JEMPI_APP_PATH
       shell: bash
-    # - name: Running javascript linter
-    #   run: './mvn_linter.sh $HOME/JeMPI_Apps'
-    #   shell: bash
+    - name: Running javascript linter
+      run: |
+        source "$HOME/.nvm/nvm.sh"
+        cd $JEMPI_APP_PATH/JeMPI_UI
+        yarn lint && yarn format
+      shell: bash
