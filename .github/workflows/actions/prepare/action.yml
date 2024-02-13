@@ -8,6 +8,11 @@ runs:
     - uses: ./.github/workflows/actions/cached-dependencies
       id: cache-dependencies
     - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
+      name: Set up Node
+      uses: ./.github/workflows/actions/install-node
+      with:
+        node-version: 20
+    - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
       name: Set up SDKMan
       uses: ./.github/workflows/actions/install-sdkman
     - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
