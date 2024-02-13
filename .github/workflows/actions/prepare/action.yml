@@ -7,22 +7,28 @@ runs:
       uses: actions/checkout@v4
     - name: Cache SDKMan Install
       uses: actions/cache@v4
+      id: cache-sdkman
       with:
         path: ~/.sdkman
-        key: sdkman-home
-    - name: Set up SDKMan
+        key: sdkman-home-${{ hashFiles('~/.sdkman/var/metadata/*.*') }}
+        restore-keys: sdkman-home
+    - if: ${{ steps.cache-sdkman.outputs.cache-hit != 'true' }}
+      name: Set up SDKMan
       uses: ./.github/workflows/actions/install-sdkman
-    - name: Set up Java
+    - if: ${{ steps.cache-sdkman.outputs.cache-hit != 'true' }}
+      name: Set up Java
       uses: ./.github/workflows/actions/sdkman-installer
       with:
         candidate: java
         version: '21.0.1-tem'
-    - name: Set up Maven
+    - if: ${{ steps.cache-sdkman.outputs.cache-hit != 'true' }}
+      name: Set up Maven
       uses: ./.github/workflows/actions/sdkman-installer
       with:
         candidate: maven
         version: '3.9.5'
-    - name: Set Scala Build Tools
+    - if: ${{ steps.cache-sdkman.outputs.cache-hit != 'true' }}
+      name: Set Scala Build Tools
       uses: ./.github/workflows/actions/sdkman-installer
       with:
         candidate: sbt
