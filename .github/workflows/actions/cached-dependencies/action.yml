@@ -1,0 +1,11 @@
+name: Action > CacheDependencies
+runs:
+  using: 'composite'
+  steps:
+    - name: Cache SDKMan Install
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.sdkman
+        # Using the prepare file as it contains all the version of the dependencies
+        key: build-dependencies-${{ hashFiles('**/.github/workflows/actions/prepare/action.yml') }}
