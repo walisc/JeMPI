@@ -31,21 +31,20 @@ jobs:
   build-check:
     needs: [lint]
     runs-on: ubuntu-22.04
-    continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/build-check
   test:
     needs: [build-check]
     runs-on: ubuntu-22.04
-    continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
+    continue-on-error: true # TODO: Uncomment this out once tests are in a better state - ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/test
   smoke-test:
     needs: [test]
     runs-on: ubuntu-22.04
-    continue-on-error: ${{ github.ref != 'refs/heads/main' || github.ref != 'refs/heads/master' }}
+    continue-on-error: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/smoke-test

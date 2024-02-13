@@ -3,5 +3,19 @@ name: Action > Build Check
 runs:
   using: 'composite'
   steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - uses: ./.github/workflows/actions/cached-dependencies
+    - name: Build  javascript app (ui)
+      run: |
+        source "$HOME/.nvm/nvm.sh"
+        cd $JEMPI_APP_PATH/JeMPI_UI
+        yarn install --frozen-lockfile
+        yarn build
+      shell: bash
+    - name: Build Java App
+      run: |
+        set -eo pipefail
+        source "$HOME/.sdkman/bin/sdkman-init.sh"
+        cd $JEMPI_APP_PATH
+        mvn clean package
+      shell: bash
