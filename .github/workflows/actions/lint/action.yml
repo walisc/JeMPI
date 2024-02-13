@@ -4,10 +4,7 @@ runs:
   using: 'composite'
   steps:
     - uses: actions/checkout@v4
-    - uses: actions/cache@v4
-      with:
-        path: ~/.sdkman
-        key: sdkman-home
+    - uses: ./.github/workflows/actions/cached-dependencies
     - name: Running java linter
       run: |
         set -eo pipefail
