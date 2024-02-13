@@ -38,5 +38,5 @@ runs:
       uses: actions/cache@v4
       with:
         path: ~/.sdkman
-        key: sdkman-home-${{ hashFiles('./.sdkman/var/metadata/*.*', './.sdkman', true) }}
+        key: sdkman-home-${{ hashFiles('./.sdkman/var/metadata/*.*') }}
         restore-keys: sdkman-home
