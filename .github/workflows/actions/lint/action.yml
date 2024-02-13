@@ -10,7 +10,7 @@ runs:
         key: sdkman-home
     - name: Running java linter
       run: |
-        set -e
+        set -eo pipefail
         source "$HOME/.sdkman/bin/sdkman-init.sh"
         $GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $JEMPI_APP_PATH
       shell: bash
