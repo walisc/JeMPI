@@ -10,7 +10,7 @@ runs:
       id: cache-sdkman
       with:
         path: ~/.sdkman
-        key: sdkman-home-${{ hashFiles('./.sdkman/var/metadata/*.*', './.sdkman', true) }}
+        key: sdkman-home-${{ hashFiles('./.sdkman/var/metadata/*.*') }}
         restore-keys: sdkman-home
     - if: ${{ steps.cache-sdkman.outputs.cache-hit != 'true' }}
       name: Set up SDKMan
