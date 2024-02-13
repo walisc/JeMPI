@@ -22,14 +22,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/prepare
-  lint:
+  lint-check:
     needs: [prepare]
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/lint
   build-check:
-    needs: [lint]
+    needs: [lint-check]
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4

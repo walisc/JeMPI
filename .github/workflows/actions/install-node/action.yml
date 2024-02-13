@@ -16,3 +16,9 @@ runs:
       source "$HOME/.nvm/nvm.sh"
       nvm install ${{ inputs.node-version }}
     shell: bash
+  - name: Install UI packages
+    run: |
+       source "$HOME/.nvm/nvm.sh"
+       cd $JEMPI_APP_PATH/JeMPI_UI
+       yarn install --frozen-lockfile
+    shell: bash
