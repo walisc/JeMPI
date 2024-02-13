@@ -9,7 +9,7 @@ runs:
       run: |
         source "$HOME/.nvm/nvm.sh"
         cd $JEMPI_APP_PATH/JeMPI_UI
-        ls ./
+        yarn install --frozen-lockfile
         yarn lint && yarn format
       shell: bash
     - name: Running java linter
