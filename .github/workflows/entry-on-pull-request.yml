@@ -15,6 +15,7 @@ defaults:
 env:
   GITHUB_WORKFLOW_FOLDER: ./.github/workflows
   JEMPI_APP_PATH: ./JeMPI_Apps
+  DEPENDENCIES_HASH: ${{ hashFiles('**/.github/workflows/actions/prepare/action.yml') }}
 
 jobs:
   prepare:

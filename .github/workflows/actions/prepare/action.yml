@@ -10,7 +10,7 @@ runs:
       id: cache-sdkman
       with:
         path: ~/.sdkman
-        key: sdkman-home-${{ hashFiles('**/.github/workflows/actions/prepare/action.yml') }}
+        key: sdkman-home-$DEPENDENCIES_HASH
         restore-keys: sdkman-home
     - if: ${{ steps.cache-sdkman.outputs.cache-hit != 'true' }}
       name: Set up SDKMan
