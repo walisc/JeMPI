@@ -11,7 +11,7 @@ runs:
     - name: Running java linter
       run: |
         source "$HOME/.sdkman/bin/sdkman-init.sh"
-        '$GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $HOME/JeMPI_Apps'
+        $GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $HOME/JeMPI_Apps
       shell: bash
     # - name: Running javascript linter
     #   run: './mvn_linter.sh $HOME/JeMPI_Apps'
