@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 cd "$1"
 
 for dir in */; do
