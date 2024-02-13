@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -eo pipefail
-
 cd "$1"
 
 sdfsdf = 97
