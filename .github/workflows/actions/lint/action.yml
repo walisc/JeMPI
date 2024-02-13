@@ -10,8 +10,8 @@ runs:
         key: sdkman-home
     - name: Running java linter
       run: |
+        set -e
         source "$HOME/.sdkman/bin/sdkman-init.sh"
-        set -x
         $GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $JEMPI_APP_PATH
       shell: bash
     # - name: Running javascript linter
