@@ -10,9 +10,9 @@ runs:
         key: sdkman-home
     - name: Running java linter
       run: |
-        set -eo pipefail
         source "$HOME/.sdkman/bin/sdkman-init.sh"
-        $GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $JEMPI_APP_PATH
+        set -eo pipefail
+        source $GITHUB_WORKFLOW_FOLDER/actions/lint/mvn_linter.sh $JEMPI_APP_PATH
       shell: bash
     # - name: Running javascript linter
     #   run: './mvn_linter.sh $HOME/JeMPI_Apps'
