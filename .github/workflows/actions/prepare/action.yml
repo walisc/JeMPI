@@ -33,3 +33,10 @@ runs:
       with:
         candidate: sbt
         version: '1.9.8'
+    - if: ${{ steps.cache-sdkman.outputs.cache-hit != 'true' }}
+      name: ReCache
+      uses: actions/cache@v4
+      with:
+        path: ~/.sdkman
+        key: sdkman-home-${{ hashFiles('./.sdkman/var/metadata/*.*', './.sdkman', true) }}
+        restore-keys: sdkman-home
