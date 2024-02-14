@@ -14,8 +14,14 @@ defaults:
     shell: bash
 
 jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/workflows/actions/prepare
   build-images:
     runs-on: ubuntu-22.04
+    needs: [prepare]
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/docker-images-build
