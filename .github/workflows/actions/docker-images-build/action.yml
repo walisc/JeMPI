@@ -1,0 +1,14 @@
+name: Action > Docker Images Build
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/workflows/actions/cached-dependencies
+    - uses: ./.github/workflows/actions/build
+    - name: Build Docker Images
+      run: |
+        set -eo pipefail
+        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-build/buildImages.sh $JEMPI_APP_PATH "${{ github.ref }}-$(git log -1 --pretty=format:%h)"
+      shell: bash
+    

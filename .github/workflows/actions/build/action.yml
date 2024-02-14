@@ -1,4 +1,4 @@
-name: Action > Build Check
+name: Action > Build
 
 runs:
   using: 'composite'

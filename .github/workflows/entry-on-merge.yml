@@ -1,9 +1,9 @@
 name: OnMerge
 
 on:
-  merged:
+  push:
     branches:
-      - '*'
+    - '*'
 
 env:
   GITHUB_WORKFLOW_FOLDER: ~/.github/workflows
@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   build-images:
-    uses: $GITHUB_WORKFLOW_FOLDER/build-images.yml
-  deploy-images-to-local-repo:
-    needs: [build-images]
-    uses: $GITHUB_WORKFLOW_FOLDER/deploy-images-to-local-repo.yml
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/workflows/actions/docker-images-build
