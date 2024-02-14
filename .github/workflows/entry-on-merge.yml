@@ -6,8 +6,8 @@ on:
     - '*'
 
 env:
-  GITHUB_WORKFLOW_FOLDER: ~/.github/workflows
-  JEMPI_APP_PATH: ~/JeMPI_Apps
+  GITHUB_WORKFLOW_FOLDER: ./.github/workflows
+  JEMPI_APP_PATH: ./JeMPI_Apps
 
 defaults:
   run:
