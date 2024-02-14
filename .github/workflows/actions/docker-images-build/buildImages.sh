@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source $GITHUB_WORKSPACE/devops/linux/docker/conf.env
+
 cd "$1"
 
 for dir in */; do
