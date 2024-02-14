@@ -7,8 +7,8 @@ username=$4
 password=$5
 
 if [ -z "$registry_url" ] || [ -z "$username" ] || [ -z "$password" ]; then
-    echo "Docker host details not set. Cannot push"
-    exit 1
+    echo "Docker host details not set. Skipping deploying"
+    exit 0
 fi
 
 
