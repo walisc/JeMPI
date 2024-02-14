@@ -4,13 +4,14 @@ runs:
   using: 'composite'
   steps:
     - uses: ./.github/workflows/actions/cached-dependencies
-    - uses: ./.github/workflows/actions/build
     - uses: ./.github/workflows/actions/load-conf-env
     - name: Build Docker Images
       run: |
         set -eo pipefail
         source "$HOME/.nvm/nvm.sh"
         source "$HOME/.sdkman/bin/sdkman-init.sh"
-        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-build/buildImages.sh $JEMPI_APP_PATH "$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)"
+        pushd $GITHUB_WORKSPACE/JeMPI_Apps
+          source ./build-all-ci.sh
+        popd
       shell: bash
     
