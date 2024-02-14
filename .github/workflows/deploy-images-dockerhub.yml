@@ -2,10 +2,6 @@ name: Deploy Images to DockerHub
 
 on:
   workflow_dispatch:
-     branches:
-      - main
-      - master
-
     inputs:
       tag:
         description: 'Tag to use'
