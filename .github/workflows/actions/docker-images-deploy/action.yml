@@ -14,11 +14,10 @@ runs:
   using: 'composite'
   steps:
     run: |
-      run: |
-        set -eo pipefail
-        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-deploy/deployDockerImages.sh \
-            "${{ inputs.image-build-tag }}" \
-            "${{ inputs.docker-push-tag }}" \
-            "${{ inputs.docker-host }}" \
-            "${{ inputs.docker-username }}" \
-            "${{ inputs.docker-password }}" 
+      set -eo pipefail
+      source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-deploy/deployDockerImages.sh \
+          "${{ inputs.image-build-tag }}" \
+          "${{ inputs.docker-push-tag }}" \
+          "${{ inputs.docker-host }}" \
+          "${{ inputs.docker-username }}" \
+          "${{ inputs.docker-password }}" 
