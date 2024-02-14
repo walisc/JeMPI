@@ -3,7 +3,6 @@ name: Action > Test
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/cached-dependencies
     - name: Testing Java Apps
       run: |

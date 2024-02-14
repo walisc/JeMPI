@@ -3,7 +3,6 @@ name: Action > Docker Images Build
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/cached-dependencies
     - uses: ./.github/workflows/actions/build
     - uses: ./.github/workflows/actions/load-conf-env

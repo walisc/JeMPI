@@ -3,8 +3,6 @@ name: Prepare
 runs:
   using: 'composite'
   steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/cached-dependencies
       id: cache-dependencies
     - if: ${{ steps.cache-dependencies.outputs.cache-hit != 'true' }}
