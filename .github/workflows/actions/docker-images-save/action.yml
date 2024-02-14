@@ -8,7 +8,7 @@ runs:
     - name: Build Docker Save
       run: |
         set -eo pipefail
-        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-save/saveImages.sh "$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) ./.github/workflows/actions/docker-images-save/docker-images"
+        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-save/saveImages.sh "$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)" "./.github/workflows/actions/docker-images-save/docker-images"
       shell: bash
     - uses: actions/upload-artifact@v2
       with:
