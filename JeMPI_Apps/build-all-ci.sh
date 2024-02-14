@@ -16,52 +16,53 @@ tag_image() {
     fi
 }
 
-pushd JeMPI_Configuration
-  ./create.sh reference/config-reference.json 
-popd
+# pushd JeMPI_Configuration
+#   ./create.sh reference/config-reference.json 
+# popd
 
-cp -L -f ./JeMPI_Configuration/config-api.json ./JeMPI_API/src/main/resources/config-api.json
-cp -L -f ./JeMPI_Configuration/config-api.json ./JeMPI_API_KC/src/main/resources/config-api.json
+# cp -L -f ./JeMPI_Configuration/config-api.json ./JeMPI_API/src/main/resources/config-api.json
+# cp -L -f ./JeMPI_Configuration/config-api.json ./JeMPI_API_KC/src/main/resources/config-api.json
 
-mvn clean package
-pushd JeMPI_EM_Scala
-  sbt clean assembly
-popd
+# mvn clean package
+# pushd JeMPI_EM_Scala
+#   sbt clean assembly
+# popd
 
 
 pushd JeMPI_AsyncReceiver
+  mvn clean package #TODO:Remove
   ./build.sh || exit 1
   tag_image $ASYNC_RECEIVER_IMAGE
 popd
-pushd JeMPI_ETL
-  ./build.sh || exit 1
-  tag_image $ETL_IMAGE
-popd
-pushd JeMPI_Controller
-  ./build.sh || exit 1
-  tag_image $CONTROLLER_IMAGE
-popd
-pushd JeMPI_EM_Scala
-  ./build.sh || exit 1
-  tag_image $EM_SCALA_IMAGE
-popd
-pushd JeMPI_Linker
-  ./build.sh || exit 1
-  tag_image $LINKER_IMAGE
-popd
-pushd JeMPI_API
-  ./build.sh || exit 1
-   tag_image $API_IMAGE
-popd
-pushd JeMPI_API_KC
-  ./build.sh || exit 1
-   tag_image $API_KC_IMAGE
-popd
-pushd JeMPI_Bootstrapper
-  ./build.sh || exit 1
-  tag_image $BOOTSTRAPPER_IMAGE
-popd
-pushd JeMPI_UI
-  ./build-image.sh || exit 1
-  tag_image $UI_IMAGE
-popd
+# pushd JeMPI_ETL
+#   ./build.sh || exit 1
+#   tag_image $ETL_IMAGE
+# popd
+# pushd JeMPI_Controller
+#   ./build.sh || exit 1
+#   tag_image $CONTROLLER_IMAGE
+# popd
+# pushd JeMPI_EM_Scala
+#   ./build.sh || exit 1
+#   tag_image $EM_SCALA_IMAGE
+# popd
+# pushd JeMPI_Linker
+#   ./build.sh || exit 1
+#   tag_image $LINKER_IMAGE
+# popd
+# pushd JeMPI_API
+#   ./build.sh || exit 1
+#    tag_image $API_IMAGE
+# popd
+# pushd JeMPI_API_KC
+#   ./build.sh || exit 1
+#    tag_image $API_KC_IMAGE
+# popd
+# pushd JeMPI_Bootstrapper
+#   ./build.sh || exit 1
+#   tag_image $BOOTSTRAPPER_IMAGE
+# popd
+# pushd JeMPI_UI
+#   ./build-image.sh || exit 1
+#   tag_image $UI_IMAGE
+# popd
