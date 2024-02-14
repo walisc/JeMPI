@@ -1,13 +1,10 @@
 #!/bin/bash
 
-script_directory=$(dirname "$0")
-images_path="$script_directory/docker-images"
+images_path="$2"
 
 if [ ! -d "$images_path" ]; then
     mkdir -p "$images_path"
 fi
-
-
 
 IMAGE_LIST=$(docker image ls --filter "reference=*:$1" --format "{{.Repository}}:{{.Tag}}")
 
