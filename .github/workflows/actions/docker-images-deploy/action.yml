@@ -20,4 +20,5 @@ runs:
             "${{ inputs.docker-push-tag }}" \
             "${{ inputs.docker-host }}" \
             "${{ inputs.docker-username }}" \
-            "${{ inputs.docker-password }}" 
+            "${{ inputs.docker-password }}"
+      shell: bash
