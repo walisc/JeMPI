@@ -9,14 +9,18 @@ password=$5
 if [ -z "$registry_url" ] || [ -z "$username" ] || [ -z "$password" ]; then
     echo "Docker host details not set. Cannot push"
     exit 1
-if
+fi
 
 
 if [ -z "$push_tag" ]; then
     push_tag=$original_tag
-if
+fi
 
-docker login "$registry_url" -u "$username" -p "$password"
+if ! docker login "$registry_url" -u "$username" -p "$password"; then
+    echo "Failed to authenticate with Docker registry. Cannot push."
+    exit 1
+fi
+
 
 IMAGE_LIST=$(docker image ls --filter "reference=*:$original_tag" --format "{{.Repository}}:{{.Tag}}")
 
