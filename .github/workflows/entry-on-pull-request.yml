@@ -27,14 +27,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/lint
-  build:
+  build-check:
     needs: [lint-check]
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/build-check
   test:
-    needs: [build]
+    needs: [build-check]
     runs-on: ubuntu-22.04
     continue-on-error: true # TODO: Uncomment this out once tests are in a better state - ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/master' }}
     steps:
