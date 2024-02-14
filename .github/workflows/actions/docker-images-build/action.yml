@@ -9,6 +9,6 @@ runs:
     - name: Build Docker Images
       run: |
         set -eo pipefail
-        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-build/buildImages.sh $JEMPI_APP_PATH "${{ github.ref }}-$(git log -1 --pretty=format:%h)"
+        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-build/buildImages.sh $JEMPI_APP_PATH "$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)"
       shell: bash
     
