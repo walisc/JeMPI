@@ -19,10 +19,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/prepare
-  build-images:
+  build-save-deploy-images:
     runs-on: ubuntu-22.04
     needs: [prepare]
     steps:
     - uses: actions/checkout@v4
-    - uses: ./.github/workflows/actions/docker-images-build
-    - uses: ./.github/workflows/actions/docker-images-save
+    - id: get-image-build-tag
+      run: echo "image-build-tag=$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)" >> $GITHUB_OUTPUT
+    - uses: ./.github/workflows/actions/build-save-deploy-images
+      with: 
+        image-build-tag: ${{ steps.get-image-build-tag.outputs.image-build-tag }}
+        docker-host: ${{ vars.DOCKER_LOCAL_HOST_NAME }}
+        docker-username: ${{ vars.DOCKER_LOCAL_DEV_USER_NAME }}
+        docker-password: ${{ vars.DOCKER_LOCAL_PASSOWRD }}

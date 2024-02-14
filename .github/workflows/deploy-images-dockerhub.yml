@@ -1,11 +1,48 @@
 name: Deploy Images to DockerHub
 
 on:
-  workflow_call:
-  
+  workflow_dispatch:
+     branches:
+      - main
+      - master
+
+    inputs:
+      tag:
+        description: 'Tag to use'
+        required: true
+        type: string
+
+env:
+  GITHUB_WORKFLOW_FOLDER: ./.github/workflows
+  JEMPI_APP_PATH: ./JeMPI_Apps
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   prepare:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - uses: ./.github/workflows/actions/prepare
+  build-save-deploy-images:
+    runs-on: ubuntu-22.04
+    needs: [prepare]
+    steps:
+    - uses: actions/checkout@v4
+    - id: validate-tag
+      run: |
+          if git tag --list | grep -q "^${{ inputs.tags }}$"; then
+            echo "image-build-tag=$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)" >> $GITHUB_OUTPUT
+          else
+            echo "The tag '${{ inputs.tags }}' does not exist on the branch '$GITHUB_REF_NAME'"
+            exit 1
+          fi
+        
+    - uses: ./.github/workflows/actions/build-save-deploy-images
+      with: 
+        image-build-tag: ${{ steps.validate-tag.outputs.image-build-tag }}
+        docker-host: ${{ vars.DOCKER_HUB_HOST_NAME }}
+        docker-username: ${{ vars.DOCKER_HUB_DEV_USER_NAME }}
+        docker-password: ${{ vars.DOCKER_HUB_PASSOWRD }}

@@ -1,5 +1,7 @@
 name: Action > Docker Images Build
-
+inputs:
+  image-build-tag:
+    required: true
 runs:
   using: 'composite'
   steps:
@@ -13,7 +15,7 @@ runs:
         source $GITHUB_WORKSPACE/devops/linux/docker/conf.env
         source $GITHUB_WORKSPACE/devops/linux/docker/conf/images/conf-app-images.sh 
         pushd $GITHUB_WORKSPACE/JeMPI_Apps
-          source ./build-all-ci.sh "$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)"
+          source ./build-all-ci.sh "${{ inputs.image-build-tag }}"
         popd
         docker image ls
       shell: bash
