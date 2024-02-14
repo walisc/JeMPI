@@ -29,6 +29,13 @@ jobs:
     - uses: actions/checkout@v4
     - id: validate-tag
       run: |
+
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          if [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+              echo "Can only do a manual deployment on main / master. Exiting."
+              exit 1
+          fi
+
           if git tag --list | grep -q "^${{ inputs.tag }}$"; then
             echo "image-build-tag=$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h)" >> $GITHUB_OUTPUT
             echo "docker-push-tag=${{ inputs.tag }}" >> $GITHUB_OUTPUT
