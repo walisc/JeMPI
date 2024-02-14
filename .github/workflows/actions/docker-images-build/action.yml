@@ -5,7 +5,8 @@ runs:
   steps:
     - uses: actions/checkout@v4
     - uses: ./.github/workflows/actions/cached-dependencies
-    - uses: ./.github/workflows/actions/build
+    #- uses: ./.github/workflows/actions/build
+    - uses: ./.github/workflows/actions/load-conf-env
     - name: Build Docker Images
       run: |
         set -eo pipefail
