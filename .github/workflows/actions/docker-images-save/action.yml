@@ -2,19 +2,17 @@ name: Action > Docker Images Build
 
 runs:
   using: 'composite'
-  env:
-    SAVE_OUTPUT_PATH: ./.github/workflows/actions/docker-images-save/docker-images
   steps:
     - uses: ./.github/workflows/actions/cached-dependencies
     - uses: ./.github/workflows/actions/load-conf-env
     - name: Build Docker Save
       run: |
         set -eo pipefail
-        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-save/saveImages.sh "$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) $SAVE_OUTPUT_PATH"
+        source $GITHUB_WORKFLOW_FOLDER/actions/docker-images-save/saveImages.sh "$(git rev-parse --abbrev-ref HEAD)-$(git log -1 --pretty=format:%h) ./.github/workflows/actions/docker-images-save/docker-images"
       shell: bash
     - uses: actions/upload-artifact@v2
       with:
         name: docker-images
         path: |
-          $SAVE_OUTPUT_PATH/
+          ./.github/workflows/actions/docker-images-save/docker-images/
     
