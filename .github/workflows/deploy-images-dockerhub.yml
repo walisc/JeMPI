@@ -48,6 +48,6 @@ jobs:
       with: 
         image-build-tag: ${{ steps.validate-tag.outputs.image-build-tag }}
         docker-push-tag: ${{ inputs.docker-push-tag }}
-        docker-host: ${{ vars.DOCKER_HUB_HOST_NAME }}
+        docker-host: "docker.io"
         docker-username: ${{ secrets.DOCKER_HUB_DEV_USER_NAME }}
         docker-password: ${{ secrets.DOCKER_HUB_PASSOWRD }}
