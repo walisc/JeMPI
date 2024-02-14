@@ -6,6 +6,8 @@ runs:
     - uses: actions/checkout@v4
     - name: Load Conf Env
       run: |
-        $GITHUB_WORKSPACE/devops/linux/docker/conf/env/create-env-linux-high-1.sh
+        pushd $GITHUB_WORKSPACE/devops/linux/docker/conf/env
+        ./create-env-linux-high-1.sh
+        popd
         source $GITHUB_WORKSPACE/devops/linux/docker/conf.env
       shell: bash
