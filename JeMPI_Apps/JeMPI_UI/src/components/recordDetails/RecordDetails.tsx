@@ -14,7 +14,6 @@ import {
   GridRowSelectionModel,
   GridValueSetterParams
 } from '@mui/x-data-grid'
-import { useMatch, useNavigate } from '@tanstack/react-location'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import Loading from 'components/common/Loading'
@@ -26,24 +25,24 @@ import PageHeader from 'components/shell/PageHeader'
 import { useAppConfig } from 'hooks/useAppConfig'
 import { useSnackbar } from 'notistack'
 import { useState } from 'react'
-import ApiClient from 'services/ApiClient'
 import { DisplayField, FieldChangeReq, FieldType } from 'types/Fields'
 import { PatientRecord, GoldenRecord, AnyRecord } from 'types/PatientRecord'
 import { sortColumns } from 'utils/helpers'
 import getCellComponent from 'components/shared/getCellComponent'
 import { AUDIT_TRAIL_COLUMNS } from 'utils/constants'
 import { AuditTrail } from 'types/AuditTrail'
+import { useLoaderData, useNavigate } from 'react-router-dom'
+import { useConfig } from 'hooks/useConfig'
 
 export interface UpdatedFields {
   [fieldName: string]: { oldValue: unknown; newValue: unknown }
 }
 
 const RecordDetails = () => {
-  const {
-    data: { uid }
-  } = useMatch()
+  const uid = useLoaderData()
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
+  const { apiClient } = useConfig()
   const { availableFields } = useAppConfig()
   const [isEditMode, setIsEditMode] = useState(false)
   const [updatedFields, setUpdatedFields] = useState<UpdatedFields>({})
@@ -122,7 +121,7 @@ const RecordDetails = () => {
     queryKey: ['record-details', uid],
     queryFn: async () => {
       const recordId = uid as string
-      return await ApiClient.getFlatExpandedGoldenRecords([recordId])
+      return await apiClient.getFlatExpandedGoldenRecords([recordId])
     },
     onSuccess: data => {
       setPatientRecord(data[0])
@@ -141,9 +140,9 @@ const RecordDetails = () => {
     queryFn: async () => {
       if (record) {
         if ('linkRecords' in record) {
-          return await ApiClient.getGoldenRecordAuditTrail(record.uid || '')
+          return await apiClient.getGoldenRecordAuditTrail(record.uid || '')
         } else {
-          return await ApiClient.getInteractionAuditTrail(record.uid || '')
+          return await apiClient.getInteractionAuditTrail(record.uid || '')
         }
       }
       throw new Error('Empty record')
@@ -155,7 +154,7 @@ const RecordDetails = () => {
   const updateRecord = useMutation({
     mutationKey: ['golden-record', record?.uid],
     mutationFn: async (req: FieldChangeReq) => {
-      return await ApiClient.updatedGoldenRecord(record?.uid as string, req)
+      return await apiClient.updatedGoldenRecord(record?.uid as string, req)
     },
     onSuccess: () => {
       enqueueSnackbar(`Successfully saved patient records`, {
@@ -250,19 +249,12 @@ const RecordDetails = () => {
   }
 
   return (
-    <Container
-      maxWidth={false}
-      sx={{
-        '& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus': {
-          outline: 'none'
-        }
-      }}
-    >
+    <Container maxWidth={false}>
       <PageHeader
         breadcrumbs={[
           { icon: <Search />, title: 'Browse Records', link: '/browse-records' }
         ]}
-        title={`Patient interactions for GID ${uid}`}
+        title={`Patient interactions`}
       />
       <Divider />
       <ConfirmEditingDialog
@@ -271,7 +263,7 @@ const RecordDetails = () => {
         updatedFields={updatedFields}
         onConfirm={onConfirm}
       />
-      <Stack mt="20px" direction="column" gap="20px">
+      <Stack padding={'2rem 1rem 1rem 1rem'} direction="column" gap="20px">
         <Paper sx={{ p: 1 }}>
           <Stack p={1} flexDirection={'row'} justifyContent={'space-between'}>
             <Typography variant="h6">Records</Typography>
@@ -301,10 +293,8 @@ const RecordDetails = () => {
               ) : (
                 <Button
                   onClick={() =>
-                    navigate({
-                      fromCurrent: true,
-                      to: 'relink',
-                      search: {
+                    navigate(`/record-details/${data[0].uid}/relink`, {
+                      state: {
                         payload: {
                           patient_id: record.uid,
                           golden_id: data[0].uid,

@@ -1,21 +1,23 @@
 import './App.css'
 
 import { CssBaseline, ThemeProvider } from '@mui/material'
-import { ReactLocation, Router } from '@tanstack/react-location'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SnackbarProvider } from 'notistack'
-import ErrorBoundary from './components/error/ErrorBoundary'
-import Shell from './components/shell/Shell'
-import { AppConfigProvider } from './hooks/useAppConfig'
-import { AuthProvider } from './hooks/useAuth'
 import baseTheme from './themes/baseTheme'
-import baseRoutes from 'routes/BaseRoutes'
-import { ReactLocationDevtools, ReactQueryDevtools } from 'DevTools'
+import baseRouter from 'router/BaseRouter'
+import { RouterProvider } from 'react-router-dom'
+import { ConfigProvider } from 'hooks/useConfig'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import ScrollBackButtons from 'components/shared/ScrollBackButtons'
+import { AuthProvider } from 'hooks/useAuth'
+import { SnackbarProvider } from 'notistack'
+import React from 'react'
 
-const location = new ReactLocation({})
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {}
+    queries: {
+      staleTime: 5 * (60 * 1000),
+      cacheTime: 10 * (60 * 1000)
+    }
   }
 })
 
@@ -23,23 +25,17 @@ const App = () => {
   return (
     <ThemeProvider theme={baseTheme}>
       <CssBaseline />
-      <QueryClientProvider client={queryClient}>
-        <Router location={location} routes={baseRoutes}>
-          <SnackbarProvider
-            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-          >
+      <SnackbarProvider anchorOrigin={{ horizontal: 'right', vertical: 'top' }}>
+        <QueryClientProvider client={queryClient}>
+          <ConfigProvider>
             <AuthProvider>
-              <ErrorBoundary>
-                <AppConfigProvider>
-                  <Shell />
-                </AppConfigProvider>
-              </ErrorBoundary>
+              <ScrollBackButtons />
+              <RouterProvider router={baseRouter} />
             </AuthProvider>
-          </SnackbarProvider>
-          <ReactLocationDevtools position="bottom-right" />
-          <ReactQueryDevtools />
-        </Router>
-      </QueryClientProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </ConfigProvider>
+        </QueryClientProvider>
+      </SnackbarProvider>
     </ThemeProvider>
   )
 }

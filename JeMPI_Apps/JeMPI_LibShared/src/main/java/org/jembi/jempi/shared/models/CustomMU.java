@@ -3,11 +3,16 @@ package org.jembi.jempi.shared.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record CustomMU(Probability dummy) {
+public record CustomMU(String tag,
+                       Probability givenName,
+                       Probability familyName,
+                       Probability gender,
+                       Probability dob,
+                       Probability city,
+                       Probability phoneNumber,
+                       Probability nationalId) {
 
-   public CustomMU(final double[] mHat, final double[] uHat) {
-      this(new CustomMU.Probability(0.0F, 0.0F));
-   }
+   public static final Boolean SEND_INTERACTIONS_TO_EM = true;
 
    public record Probability(float m, float u) {
    }

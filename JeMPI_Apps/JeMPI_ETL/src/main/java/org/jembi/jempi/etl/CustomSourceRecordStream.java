@@ -46,28 +46,23 @@ public final class CustomSourceRecordStream {
             Serdes.serdeFrom(interactionEnvelopSerializer, interactionEnvelopDeserializer);
       final StreamsBuilder streamsBuilder = new StreamsBuilder();
       final KStream<String, InteractionEnvelop> sourceKStream =
-            streamsBuilder.stream(GlobalConstants.TOPIC_INTERACTION_ASYNC_ETL,
-                                  Consumed.with(stringSerde,
-                                                interactionEnvelopSerde));
-      sourceKStream
-            .map((key, rec) -> {
-               if (rec.contentType() == InteractionEnvelop.ContentType.BATCH_INTERACTION) {
-                  final var interaction = rec.interaction();
-                  final var demographicData = interaction.demographicData();
-                  final var newEnvelop = new InteractionEnvelop(
-                        rec.contentType(),
-                        rec.tag(),
-                        rec.stan(),
-                        new Interaction(null,
-                                        rec.interaction().sourceId(),
-                                        interaction.uniqueInteractionData(),
-                                        demographicData.clean()));
-                  return KeyValue.pair(key, newEnvelop);
-               } else {
-                  return KeyValue.pair(key, rec);
-               }
-            })
-            .to(GlobalConstants.TOPIC_INTERACTION_CONTROLLER, Produced.with(stringSerde, interactionEnvelopSerde));
+            streamsBuilder.stream(GlobalConstants.TOPIC_INTERACTION_ETL, Consumed.with(stringSerde, interactionEnvelopSerde));
+      sourceKStream.map((key, rec) -> {
+         if (rec.contentType() == InteractionEnvelop.ContentType.BATCH_INTERACTION) {
+            final var interaction = rec.interaction();
+            final var demographicData = interaction.demographicData();
+            final var newEnvelop = new InteractionEnvelop(rec.contentType(),
+                                                          rec.tag(),
+                                                          rec.stan(),
+                                                          new Interaction(null,
+                                                                          rec.interaction().sourceId(),
+                                                                          interaction.uniqueInteractionData(),
+                                                                          demographicData.clean()));
+            return KeyValue.pair(key, newEnvelop);
+         } else {
+            return KeyValue.pair(key, rec);
+         }
+      }).to(GlobalConstants.TOPIC_INTERACTION_CONTROLLER, Produced.with(stringSerde, interactionEnvelopSerde));
       interactionKafkaStreams = new KafkaStreams(streamsBuilder.build(), props);
       interactionKafkaStreams.cleanUp();
       interactionKafkaStreams.start();

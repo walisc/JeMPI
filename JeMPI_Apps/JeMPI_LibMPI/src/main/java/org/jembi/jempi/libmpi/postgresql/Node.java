@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Locale;
 import java.util.UUID;
 
 import static org.jembi.jempi.libmpi.postgresql.PostgresqlMutations.TABLE_NODES;
@@ -22,15 +23,15 @@ interface Node {
 
    default UUID createNode() {
       UUID uid;
-      try (var stmt = PostgresqlClient.getInstance().prepareStatement(
-            String.format("""
-                          insert into %s (type, fields)
-                          values ('%s', '%s');
-                          """,
-                          TABLE_NODES,
-                          this.getType().name(),
-                          OBJECT_MAPPER.writeValueAsString(this.getNodeData())).stripIndent(),
-            Statement.RETURN_GENERATED_KEYS)) {
+      try (var stmt = PostgresqlClient.getInstance().prepareStatement(String.format(Locale.ROOT,
+                                                                                    """
+                                                                                    insert into %s (type, fields)
+                                                                                    values ('%s', '%s');
+                                                                                    """,
+                                                                                    TABLE_NODES,
+                                                                                    this.getType().name(),
+                                                                                    OBJECT_MAPPER.writeValueAsString(this.getNodeData()))
+                                                                            .stripIndent(), Statement.RETURN_GENERATED_KEYS)) {
          stmt.executeUpdate();
          try (ResultSet keys = stmt.getGeneratedKeys()) {
             keys.next();

@@ -10,11 +10,7 @@ import org.jembi.jempi.shared.models.GoldenRecord;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.jembi.jempi.libmpi.postgresql.PostgresqlMutations.*;
 import static org.jembi.jempi.shared.utils.AppUtils.OBJECT_MAPPER;
@@ -29,7 +25,7 @@ public final class PostgresqlQueries {
    public static Float getScore(
          final UUID gid,
          final UUID eid) {
-      final var sql = String.format("select facet from %s where source = ? and dest = ?;", TABLE_EDGES_GID2EID);
+      final var sql = String.format(Locale.ROOT, "select facet from %s where source = ? and dest = ?;", TABLE_EDGES_GID2EID);
       try (var stmt = PostgresqlClient.getInstance().prepareStatement(sql)) {
          stmt.setObject(1, gid, Types.OTHER);
          stmt.setObject(2, eid, Types.OTHER);
@@ -46,7 +42,7 @@ public final class PostgresqlQueries {
    }
 
    private static Long countNodeType(final Node.NodeType nodeType) {
-      final var sql = String.format("select count(*) from %s where type = '%s';", TABLE_NODES, nodeType.name());
+      final var sql = String.format(Locale.ROOT, "select count(*) from %s where type = '%s';", TABLE_NODES, nodeType.name());
       try (var stmt = PostgresqlClient.getInstance().createStatement()) {
          final var rs = stmt.executeQuery(sql);
          if (rs.next()) {
@@ -62,7 +58,7 @@ public final class PostgresqlQueries {
    public static List<UUID> getGoldenIds() {
       final List<UUID> result = new ArrayList<>();
       try (var stmt = PostgresqlClient.getInstance().createStatement()) {
-         final var rs = stmt.executeQuery(String.format("select id from %s;", TABLE_NODE_GOLDEN_RECORDS));
+         final var rs = stmt.executeQuery(String.format(Locale.ROOT, "select id from %s;", TABLE_NODE_GOLDEN_RECORDS));
          while (rs.next()) {
             result.add(UUID.fromString(rs.getString(1)));
          }
@@ -83,7 +79,8 @@ public final class PostgresqlQueries {
    public static List<NodeSourceId> findSourceId(
          final String facility,
          final String patient) {
-      final var sql = String.format("select * from %s where fields->>'facility' = ? and fields->>'patient' = ?;",
+      final var sql = String.format(Locale.ROOT,
+                                    "select * from %s where fields->>'facility' = ? and fields->>'patient' = ?;",
                                     TABLE_NODE_SOURCE_IDS);
       try (var stmt = PostgresqlClient.getInstance().prepareStatement(sql)) {
          stmt.setString(1, facility);
@@ -117,12 +114,10 @@ public final class PostgresqlQueries {
    }
 
    public static List<NodeSourceId> getInteractionSourceIds(final UUID eid) {
-      final var sql = String.format("""
-                                    SELECT * FROM %s
-                                    WHERE id IN (SELECT dest FROM %s WHERE source = ?);
-                                    """,
-                                    TABLE_NODE_SOURCE_IDS,
-                                    TABLE_EDGES_EID2SID).stripIndent();
+      final var sql = String.format(Locale.ROOT, """
+                                                 SELECT * FROM %s
+                                                 WHERE id IN (SELECT dest FROM %s WHERE source = ?);
+                                                 """, TABLE_NODE_SOURCE_IDS, TABLE_EDGES_EID2SID).stripIndent();
       try (var stmt = PostgresqlClient.getInstance().prepareStatement(sql)) {
          stmt.setObject(1, eid, Types.OTHER);
          return runQuery(stmt);
@@ -133,12 +128,10 @@ public final class PostgresqlQueries {
    }
 
    public static List<NodeSourceId> getGoldenRecordSourceIds(final UUID gid) {
-      final var sql = String.format("""
-                                    select * from %s
-                                    where id in (select dest from %s where source = ?);
-                                    """,
-                                    TABLE_NODE_SOURCE_IDS,
-                                    TABLE_EDGES_GID2SID).stripIndent();
+      final var sql = String.format(Locale.ROOT, """
+                                                 select * from %s
+                                                 where id in (select dest from %s where source = ?);
+                                                 """, TABLE_NODE_SOURCE_IDS, TABLE_EDGES_GID2SID).stripIndent();
       try (var stmt = PostgresqlClient.getInstance().prepareStatement(sql)) {
          stmt.setObject(1, gid, Types.OTHER);
          return runQuery(stmt);
@@ -149,12 +142,10 @@ public final class PostgresqlQueries {
    }
 
    public static List<NodeGoldenRecord> getGoldenRecordsOfInteraction(final UUID eid) {
-      final var sql = String.format("""
-                                    select * from %s
-                                    where id in (select source from %s where dest = ?);
-                                    """,
-                                    TABLE_NODE_GOLDEN_RECORDS,
-                                    TABLE_EDGES_GID2EID).stripIndent();
+      final var sql = String.format(Locale.ROOT, """
+                                                 select * from %s
+                                                 where id in (select source from %s where dest = ?);
+                                                 """, TABLE_NODE_GOLDEN_RECORDS, TABLE_EDGES_GID2EID).stripIndent();
       try (var stmt = PostgresqlClient.getInstance().prepareStatement(sql)) {
          stmt.setObject(1, eid, Types.OTHER);
          final var rs = stmt.executeQuery();
@@ -162,11 +153,8 @@ public final class PostgresqlQueries {
          while (rs.next()) {
             final var id = rs.getString("id");
             final var json = rs.getString("fields");
-            final var goldenRecordData = new CustomGoldenRecordData(OBJECT_MAPPER.readValue(json,
-                                                                                            CustomDemographicData.class));
-            list.add(new NodeGoldenRecord(Node.NodeType.valueOf(rs.getString("type")),
-                                          UUID.fromString(id),
-                                          goldenRecordData));
+            final var goldenRecordData = new CustomGoldenRecordData(OBJECT_MAPPER.readValue(json, CustomDemographicData.class));
+            list.add(new NodeGoldenRecord(Node.NodeType.valueOf(rs.getString("type")), UUID.fromString(id), goldenRecordData));
          }
          return list;
       } catch (SQLException | JsonProcessingException e) {
@@ -176,12 +164,10 @@ public final class PostgresqlQueries {
    }
 
    public static List<NodeInteraction> getGoldenRecordInteractions(final UUID gid) {
-      final var sql = String.format("""
-                                    select * from %s
-                                    where id in (select dest from %s where source = ?);
-                                    """,
-                                    TABLE_NODE_INTERACTIONS,
-                                    TABLE_EDGES_GID2EID).stripIndent();
+      final var sql = String.format(Locale.ROOT, """
+                                                 select * from %s
+                                                 where id in (select dest from %s where source = ?);
+                                                 """, TABLE_NODE_INTERACTIONS, TABLE_EDGES_GID2EID).stripIndent();
       try (var stmt = PostgresqlClient.getInstance().prepareStatement(sql)) {
          stmt.setObject(1, gid, Types.OTHER);
          final var rs = stmt.executeQuery();
@@ -206,14 +192,8 @@ public final class PostgresqlQueries {
          while (rs.next()) {
             final var id = rs.getString("id");
             final var json = rs.getString("fields");
-            final var goldenRecordData = new CustomGoldenRecordData(OBJECT_MAPPER.readValue(json,
-                                                                                            CustomDemographicData.class));
-            list.add(new GoldenRecord(id,
-                                      null,
-                                      new CustomUniqueGoldenRecordData(LocalDateTime.now(),
-                                                                       true,
-                                                                       "AUX_ID"),
-                                      goldenRecordData));
+            final var goldenRecordData = new CustomGoldenRecordData(OBJECT_MAPPER.readValue(json, CustomDemographicData.class));
+            list.add(new GoldenRecord(id, null, new CustomUniqueGoldenRecordData(null), goldenRecordData));
          }
          return list;
       } catch (SQLException | JsonProcessingException e) {
@@ -239,17 +219,16 @@ public final class PostgresqlQueries {
    }
 
    public static NodeGoldenRecord getGoldenRecord(final UUID gid) {
-      try (var stmt = PostgresqlClient.getInstance().prepareStatement(
-            String.format("""
-                          select * from %s where id = ?;
-                          """,
-                          TABLE_NODE_GOLDEN_RECORDS).stripIndent())) {
+      try (var stmt = PostgresqlClient.getInstance().prepareStatement(String.format(Locale.ROOT, """
+                                                                                                 select * from %s where id = ?;
+                                                                                                 """, TABLE_NODE_GOLDEN_RECORDS)
+                                                                            .stripIndent())) {
          stmt.setObject(1, gid, Types.OTHER);
          final var rs = stmt.executeQuery();
          if (rs.next()) {
             final var id = rs.getString("id");
-            final var goldenRecordData = new CustomGoldenRecordData(OBJECT_MAPPER.readValue(rs.getString("fields"),
-                                                                                            CustomDemographicData.class));
+            final var goldenRecordData =
+                  new CustomGoldenRecordData(OBJECT_MAPPER.readValue(rs.getString("fields"), CustomDemographicData.class));
             return new NodeGoldenRecord(Node.NodeType.valueOf(rs.getString("type")), UUID.fromString(id), goldenRecordData);
          }
          return null;
@@ -260,18 +239,16 @@ public final class PostgresqlQueries {
    }
 
    static NodeInteraction getInteraction(final UUID iid) {
-      try (var stmt = PostgresqlClient.getInstance().prepareStatement(
-            String.format("""
-                          select * from %s
-                          where id = ?;
-                          """,
-                          TABLE_NODE_INTERACTIONS))) {
+      try (var stmt = PostgresqlClient.getInstance().prepareStatement(String.format(Locale.ROOT, """
+                                                                                                 select * from %s
+                                                                                                 where id = ?;
+                                                                                                 """, TABLE_NODE_INTERACTIONS))) {
          stmt.setObject(1, iid, Types.OTHER);
          final var rs = stmt.executeQuery();
          if (rs.next()) {
             final var id = rs.getString("id");
-            final var interactionData = new CustomInteractionData(OBJECT_MAPPER.readValue(rs.getString("fields"),
-                                                                                          CustomDemographicData.class));
+            final var interactionData =
+                  new CustomInteractionData(OBJECT_MAPPER.readValue(rs.getString("fields"), CustomDemographicData.class));
             return new NodeInteraction(Node.NodeType.valueOf(rs.getString("type")), UUID.fromString(id), interactionData);
          }
          return null;
@@ -282,17 +259,15 @@ public final class PostgresqlQueries {
    }
 
    public static NodeSourceId getSourceId(final UUID sid) {
-      try (var stmt = PostgresqlClient.getInstance().prepareStatement(
-            String.format("""
-                          select * from %s where id = ?;
-                          """,
-                          TABLE_NODE_SOURCE_IDS).stripIndent())) {
+      try (var stmt = PostgresqlClient.getInstance().prepareStatement(String.format(Locale.ROOT, """
+                                                                                                 select * from %s where id = ?;
+                                                                                                 """, TABLE_NODE_SOURCE_IDS)
+                                                                            .stripIndent())) {
          stmt.setObject(1, sid, Types.OTHER);
          final var rs = stmt.executeQuery();
          if (rs.next()) {
             final var id = rs.getString("id");
-            final var sourceIdData =
-                  OBJECT_MAPPER.readValue(rs.getString("fields"), NodeSourceId.SourceIdData.class);
+            final var sourceIdData = OBJECT_MAPPER.readValue(rs.getString("fields"), NodeSourceId.SourceIdData.class);
             return new NodeSourceId(Node.NodeType.valueOf(rs.getString("type")), UUID.fromString(id), sourceIdData);
          }
          return null;

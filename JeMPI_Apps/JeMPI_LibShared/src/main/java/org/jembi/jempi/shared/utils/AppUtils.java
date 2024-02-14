@@ -20,12 +20,13 @@ import java.util.stream.Collectors;
 
 public final class AppUtils implements Serializable {
 
-   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                                                                      .registerModule(new JavaTimeModule());
+   public static final ObjectMapper OBJECT_MAPPER =
+         new ObjectMapper().disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS).registerModule(new JavaTimeModule());
 
    private static final Logger LOGGER = LogManager.getLogger(AppUtils.class);
    @Serial
    private static final long serialVersionUID = 1L;
+   static Long autoIncrement = 0L;
 
    private AppUtils() {
       OBJECT_MAPPER.configOverride(String.class).setSetterInfo(JsonSetter.Value.forValueNulls((Nulls.SET)));
@@ -38,8 +39,7 @@ public final class AppUtils implements Serializable {
          if (is == null) {
             return null;
          }
-         try (InputStreamReader isr = new InputStreamReader(is);
-              BufferedReader reader = new BufferedReader(isr)) {
+         try (InputStreamReader isr = new InputStreamReader(is); BufferedReader reader = new BufferedReader(isr)) {
             return reader.lines().collect(Collectors.joining(System.lineSeparator()));
          }
       }
@@ -87,6 +87,10 @@ public final class AppUtils implements Serializable {
       }
    }
 
+   public static String autoGenerateId() {
+      return Long.toString(++autoIncrement);
+   }
+
    @Serial
    private Object readResolve() {
       return getInstance();
@@ -95,4 +99,5 @@ public final class AppUtils implements Serializable {
    private static class UtilsSingletonHolder {
       public static final AppUtils INSTANCE = new AppUtils();
    }
+
 }

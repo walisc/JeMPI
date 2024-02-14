@@ -1,14 +1,14 @@
-import { matchByPath, useLocation } from '@tanstack/react-location'
 import { useQuery } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import React, { useCallback, useMemo } from 'react'
 import Loading from '../components/common/Loading'
 import ApiErrorMessage from '../components/error/ApiErrorMessage'
-import ApiClient from '../services/ApiClient'
 import { DisplayField, FieldGroup, Fields } from '../types/Fields'
 import { AnyRecord } from '../types/PatientRecord'
 import { getFieldValueFormatter, valueGetter } from '../utils/formatters'
 import { isInputValid } from '../utils/helpers'
+import { matchPath, useLocation } from 'react-router-dom'
+import { useConfig } from './useConfig'
 
 export interface AppConfigContextValue {
   availableFields: DisplayField[]
@@ -27,6 +27,7 @@ export const AppConfigProvider = ({
   children
 }: AppConfigProviderProps): JSX.Element => {
   const location = useLocation()
+  const { apiClient } = useConfig()
   const {
     data: fields,
     error,
@@ -34,14 +35,19 @@ export const AppConfigProvider = ({
     isError
   } = useQuery<Fields, AxiosError>({
     queryKey: ['fields'],
-    queryFn: () => ApiClient.getFields(),
+    queryFn: () => apiClient.getFields(),
     refetchOnWindowFocus: false
   })
   const availableFields: DisplayField[] = useMemo(() => {
     return (fields || [])
       .filter(({ scope }) =>
         scope.some(path => {
-          return matchByPath(location.current, { to: path })
+          return matchPath(
+            {
+              path: path
+            },
+            location.pathname
+          )
         })
       )
       .map(field => {
@@ -53,7 +59,7 @@ export const AppConfigProvider = ({
         }
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fields, location.current])
+  }, [fields, location])
 
   const getFieldsByGroup = useCallback(
     (groupName: FieldGroup) => {

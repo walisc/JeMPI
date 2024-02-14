@@ -22,7 +22,7 @@ export const getFieldValueFormatter = (type: FieldType) => {
     }
   }
 }
-
+// eslint-disable-next-line
 export const valueGetter = (params: GridValueGetterParams<AnyRecord, any>) => {
   const { row, field } = params
   const f = field as keyof AnyRecord
@@ -37,3 +37,18 @@ export const formatName = (value: string) => {
   const fullName = value.split(',')
   return `${fullName[0] ? fullName[0] : ''} ${fullName[1] ? fullName[1] : ''}`
 }
+
+export const formatBytesSize = (maxSizeInBytes: number) => {
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  let size = maxSizeInBytes
+  let unitIndex = 0
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024
+    unitIndex++
+  }
+  const convertedSize = size.toFixed(2)
+  const unit = units[unitIndex]
+  return `${convertedSize} ${unit}`
+}
+
+export const megabytesToBytes = (mb: number) => mb * 1024 * 1024

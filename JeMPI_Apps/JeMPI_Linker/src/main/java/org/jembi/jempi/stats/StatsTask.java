@@ -22,8 +22,9 @@ import static org.jembi.jempi.shared.utils.AppUtils.isNullOrEmpty;
 public final class StatsTask {
 
    private static final Logger LOGGER = LogManager.getLogger(StatsTask.class);
-   private static final String URL = "http://api:50000";
-   private static final String URL_LINK = String.format("%s/JeMPI/", URL);
+   private static final String URL = String.format(Locale.ROOT, "http://%s:%s", AppConfig.API_IP, AppConfig.API_HTTP_PORT);
+
+   private static final String URL_LINK = String.format(Locale.ROOT, "%s/JeMPI/", URL);
    // 01234567890123456
    // rec-0000000001-....
    private static final int AUX_ID_SIGNIFICANT_CHARACTERS = 14;
@@ -54,11 +55,12 @@ public final class StatsTask {
       final HttpUrl.Builder urlBuilder =
             Objects.requireNonNull(HttpUrl.parse(URL_LINK + GlobalConstants.SEGMENT_COUNT_INTERACTIONS)).newBuilder();
       final String url = urlBuilder.build().toString();
+      LOGGER.debug("{}", url);
       final Request request = new Request.Builder().url(url).build();
       final Call call = client.newCall(request);
       try (var response = call.execute()) {
          assert response.body() != null;
-         var json = response.body().string();
+         final var json = response.body().string();
          return OBJECT_MAPPER.readValue(json, ApiModels.ApiInteractionCount.class).count();
       }
    }
@@ -154,6 +156,7 @@ public final class StatsTask {
             LOGGER.info("Sub Lists:            {}", subLists);
             LOGGER.info("Final Sub List Size:  {}", finalSubListSize);
          }
+
          int fromIdx;
          int toIdx;
          for (long i = 0; i < subLists; i++) {
@@ -194,19 +197,21 @@ public final class StatsTask {
          if (LOGGER.isInfoEnabled()) {
             LOGGER.info("Golden Records Found: {}", dataSet.size());
             LOGGER.info("TP:{}  FP:{}  FN:{}  Precision:{}  Recall:{}  F-score:{}",
-                        truePositives[0], falsePositives[0], falseNegatives[0],
-                        precision, recall, fScore);
+                        truePositives[0],
+                        falsePositives[0],
+                        falseNegatives[0],
+                        precision,
+                        recall,
+                        fScore);
          }
-         return new StatsResults(
-               interactionCount,
-               goldenRecords,
-               truePositives[0],
-               falsePositives[0],
-               falseNegatives[0],
-               precision,
-               recall,
-               fScore);
-
+         return new StatsResults(interactionCount,
+                                 goldenRecords,
+                                 truePositives[0],
+                                 falsePositives[0],
+                                 falseNegatives[0],
+                                 precision,
+                                 recall,
+                                 fScore);
       } catch (IOException e) {
          LOGGER.error(e.getLocalizedMessage(), e);
       }

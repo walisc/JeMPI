@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.jembi.jempi.shared.models.GlobalConstants.PSQL_TABLE_AUDIT_TRAIL;
 
@@ -16,20 +17,23 @@ final class PsqlAuditTrail {
    private final PsqlClient psqlClient;
 
    PsqlAuditTrail(
+         final String pgServer,
+         final int pgPort,
          final String pgDatabase,
          final String pgUser,
          final String pgPassword) {
-      psqlClient = new PsqlClient(pgDatabase, pgUser, pgPassword);
+      psqlClient = new PsqlClient(pgServer, pgPort, pgDatabase, pgUser, pgPassword);
    }
 
    List<AuditEvent> goldenRecordAuditTrail(final String uid) {
       psqlClient.connect();
       final var list = new ArrayList<AuditEvent>();
-      try (PreparedStatement preparedStatement = psqlClient.prepareStatement(
-            String.format(
-                  """
-                  SELECT * FROM %s where goldenID = ?;
-                  """, PSQL_TABLE_AUDIT_TRAIL).stripIndent())) {
+      try (PreparedStatement preparedStatement = psqlClient.prepareStatement(String.format(Locale.ROOT,
+                                                                                           """
+                                                                                           SELECT * FROM %s where goldenID = ?;
+                                                                                           """,
+                                                                                           PSQL_TABLE_AUDIT_TRAIL)
+                                                                                   .stripIndent())) {
          preparedStatement.setString(1, uid);
          ResultSet rs = preparedStatement.executeQuery();
          while (rs.next()) {
@@ -49,11 +53,12 @@ final class PsqlAuditTrail {
    List<AuditEvent> interactionRecordAuditTrail(final String uid) {
       psqlClient.connect();
       final var list = new ArrayList<AuditEvent>();
-      try (PreparedStatement preparedStatement = psqlClient.prepareStatement(
-            String.format(
-                  """
-                  SELECT * FROM %s where interactionID = ?;
-                  """, PSQL_TABLE_AUDIT_TRAIL).stripIndent())) {
+      try (PreparedStatement preparedStatement = psqlClient.prepareStatement(String.format(Locale.ROOT,
+                                                                                           """
+                                                                                           SELECT * FROM %s where interactionID = ?;
+                                                                                           """,
+                                                                                           PSQL_TABLE_AUDIT_TRAIL)
+                                                                                   .stripIndent())) {
          preparedStatement.setString(1, uid);
          ResultSet rs = preparedStatement.executeQuery();
          while (rs.next()) {

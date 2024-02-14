@@ -6,6 +6,7 @@ import akka.dispatch.MessageDispatcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jembi.jempi.AppConfig;
+import org.jembi.jempi.api.httpServer.HttpServer;
 import org.jembi.jempi.libapi.BackEnd;
 import org.jembi.jempi.libapi.JsonFieldsConfig;
 
@@ -14,7 +15,7 @@ import java.util.UUID;
 public final class APIKC {
 
    private static final Logger LOGGER = LogManager.getLogger(APIKC.class);
-   private static final String CONFIG_RESOURCE_FILE_NAME = "/config-api.json";
+   private static final String CONFIG_RESOURCE_FILE_NAME = "config-api.json";
    private final JsonFieldsConfig jsonFieldsConfig = new JsonFieldsConfig(CONFIG_RESOURCE_FILE_NAME);
    private HttpServer httpServer;
 
@@ -37,9 +38,12 @@ public final class APIKC {
          final ActorRef<BackEnd.Event> backEnd = context.spawn(BackEnd.create(AppConfig.GET_LOG_LEVEL,
                                                                               AppConfig.getDGraphHosts(),
                                                                               AppConfig.getDGraphPorts(),
+                                                                              AppConfig.POSTGRESQL_IP,
+                                                                              AppConfig.POSTGRESQL_PORT,
                                                                               AppConfig.POSTGRESQL_USER,
                                                                               AppConfig.POSTGRESQL_PASSWORD,
-                                                                              AppConfig.POSTGRESQL_DATABASE,
+                                                                              AppConfig.POSTGRESQL_NOTIFICATIONS_DB,
+                                                                              AppConfig.POSTGRESQL_AUDIT_DB,
                                                                               AppConfig.KAFKA_BOOTSTRAP_SERVERS,
                                                                               "CLIENT_ID_API_KC-" + UUID.randomUUID()),
                                                                "BackEnd");
@@ -52,12 +56,9 @@ public final class APIKC {
          final DispatcherSelector selector = DispatcherSelector.fromConfig("akka.actor.default-dispatcher");
          final MessageDispatcher dispatcher = (MessageDispatcher) system.dispatchers().lookup(selector);
          httpServer = new HttpServer(dispatcher);
-         httpServer.open("0.0.0.0",
-                         AppConfig.HTTP_SERVER_PORT,
-                         context.getSystem(),
-                         backEnd,
-                         jsonFieldsConfig.jsonFields);
+         httpServer.open("0.0.0.0", AppConfig.API_KC_HTTP_PORT, context.getSystem(), backEnd, jsonFieldsConfig.jsonFields);
          return Behaviors.receive(Void.class).onSignal(Terminated.class, sig -> {
+            LOGGER.info("API Server Terminated. Reason {}", sig);
             httpServer.close(context.getSystem());
             return Behaviors.stopped();
          }).build();
@@ -65,7 +66,7 @@ public final class APIKC {
    }
 
    private void run() {
-      LOGGER.info("interface:port {}:{}", "0.0.0.0", AppConfig.HTTP_SERVER_PORT);
+      LOGGER.info("interface:port {}:{}", "0.0.0.0", AppConfig.API_KC_HTTP_PORT);
       try {
          LOGGER.info("Loading fields configuration file ");
          jsonFieldsConfig.load(CONFIG_RESOURCE_FILE_NAME);

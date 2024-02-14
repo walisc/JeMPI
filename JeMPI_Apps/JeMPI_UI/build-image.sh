@@ -3,13 +3,13 @@
 set -e
 set -u
 
-source ../../docker/0-conf.env
-source ../../docker/conf/images/conf-app-images.sh
+source $PROJECT_DEVOPS_DIR/conf.env
+source $PROJECT_DEVOPS_DIR/conf/images/conf-app-images.sh
 
 rm -f ./.env
 
-envsubst < ../../docker/conf/ui/.env > ./.env
+envsubst < $PROJECT_DEVOPS_DIR/conf/ui/.env > ./.env
 
 [ -z $(docker images -q ${UI_IMAGE}) ] || docker rmi ${UI_IMAGE}
 docker system prune --volumes -f
-docker build --tag $UI_IMAGE --target production-stage .
+docker build --tag $UI_IMAGE --target $NODE_ENV-stage .
