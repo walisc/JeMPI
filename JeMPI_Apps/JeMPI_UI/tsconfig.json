@@ -25,5 +25,5 @@
       "services/*": ["services/*"]
     }
   },
-  "include": ["src", "tests"]
+  "include": ["src"]
 }

@@ -156,4 +156,14 @@ public interface LibMPIClientInterface {
          float score) {
    }
 
+   /*
+    * *****************************************************************************
+    * *
+    * Indexes
+    * *****************************************************************************
+    * *
+    */
+   Boolean deleteAllIndexes();
+   Boolean deleteIndexes(List<String> indexName);
+   Boolean createIndexes(List<String> indexName);
 }

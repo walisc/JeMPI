@@ -19,7 +19,7 @@ pushd .
   mkdir -p ${DATA_HAPROXY_DIR}
   cp conf/haproxy/*.* ${DATA_HAPROXY_DIR}
 
-  mkdir -p ${DATA_KAFKA_01_DIR}
+  mkdir -p ${DATA_KAFKA_01_DIPrR}
   if [ ! -z ${DATA_KAFKA_02_DIR+x} ] ; then mkdir -p ${DATA_KAFKA_02_DIR}; fi
   if [ ! -z ${DATA_KAFKA_03_DIR+x} ] ; then mkdir -p ${DATA_KAFKA_03_DIR}; fi
   mkdir -p ${DATA_DGRAPH_ZERO_01_DIR}
